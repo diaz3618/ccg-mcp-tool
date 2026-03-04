@@ -1,69 +1,81 @@
-# Model Selection
+# Model & Provider Selection
 
-Choose the right Gemini model for your task.
+Choose the right AI model and provider for your task.
 
-## Available Models
+## Available Providers
 
-### Gemini-2.5-pro
-- **Best for**: Complex analysis, large codebases
-- **Context**: 2M tokens
-- **Use when**: Analyzing entire projects, architectural reviews, stronger reasoning
+### Anthropic Claude Code
+- **Best for**: Advanced reasoning, complex logic explanation, and agentic workflows.
+- **Context**: State-of-the-art reasoning.
+- **Models**: `claude-3-5-sonnet`.
 
-### Gemini-2.5-flash
-- **Best for**: Quick responses, routine tasks
-- **Context**: 1M tokens  
-- **Use when**: Fast code reviews, Analyzing entire projects, simple explanations
+### OpenAI Codex
+- **Best for**: High-precision code generation, refactoring, and concise edits.
+- **Context**: Specialized for code.
+- **Models**: `gpt-5.3-codex` (default), `gpt-5.3-codex-spark`.
 
-## Setting Models
-```bash
-You need use natural language: "...using gemini flash"
-```
-```bash
-You can also append with '-m' or ask specifically with 
-```
+### Google Gemini
+- **Best for**: Massive codebases, large-scale analysis, sandbox execution.
+- **Context**: Up to 2M tokens.
+- **Models**: `gemini-2.5-pro`, `gemini-2.5-flash`.
 
-### In Configuration
+## Setting Providers and Models
+
+You can specify the provider and model directly in your tool calls, or set global defaults at startup.
+
+### At Startup (Recommended)
+Set your preferred giants in your MCP configuration file:
+
 ```json
 {
   "mcpServers": {
-    "gemini-cli": {
-      "command": "gemini-mcp",
-      "env": {
-        "GEMINI_MODEL": "gemini-1.5-flash"
-      }
+    "ccg-tool": {
+      "command": "npx",
+      "args": ["-y", "ccg-mcp-tool", "--provider", "codex", "--model", "gpt-5.3-codex"]
     }
   }
 }
 ```
 
-### Per Request (Coming Soon)
+### Per Tool Call
+You can override the defaults anytime:
+
+```bash
+# Using ask-ai tool
+/ccg-tool:ask-ai prompt:@src/auth.ts refactor this provider:claude
+
+# Using natural language
+"Ask gemini to analyze the architecture of @src/"
 ```
-/gemini-cli:analyze --model=flash @file.js quick review
-```
 
-## Model Comparison
+## Provider Comparison
 
-| Model | Speed | Context | Best Use Case |
-|-------|-------|---------|---------------|
-| Pro | Slower | 2M tokens | big ideas |
-| Flash | Fast | 1M tokens | quick, specific changes |
-
-## Cost Optimization
-
-1. **Start with Flash** for most tasks
-2. **Use Pro** only when you need the full context
-3. **Flash-8B** for simple, repetitive tasks
-
-## Token Limits
-
-- **Pro**: ~2 million tokens (~500k lines of code)
-- **Flash**: ~1 million tokens (~250k lines of code)
-- **Flash-8B**: ~1 million tokens (~250k lines of code)
+| Provider | Key Strength | Best Use Case |
+|----------|--------------|---------------|
+| **Claude** | Advanced Reasoning | Complex logic, bug RCA |
+| **Codex** | Code Precision | Refactoring, small edits |
+| **Gemini** | Massive Context | Large codebase analysis |
 
 ## Recommendations
 
-- **Code Review**: Flash
-- **Architecture Analysis**: Pro
-- **Quick Fixes**: Flash-8B
-- **Documentation**: Flash
-- **Security Audit**: Pro
+- **Architecture Review**: Gemini (Pro)
+- **Bug Root Cause Analysis**: Claude
+- **Code Refactoring**: Codex
+- **Quick Code Explanation**: Gemini (Flash)
+- **Mistake Mitigation**: Any (Claude recommended for high-integrity gates)
+
+## Cost & Token Optimization
+
+1. **Use Gemini Flash** for routine analysis to save quota.
+2. **Use Gemini Pro** for project-wide architecture reviews.
+3. **Use Codex** when you need high-fidelity code generation without context bloat.
+4. **Use Claude** when the logic is exceptionally complex.
+
+## Context Limits
+
+| Provider | Model | Limit |
+|----------|-------|-------|
+| **Gemini** | `gemini-2.5-pro` | 2 Million Tokens |
+| **Gemini** | `gemini-2.5-flash` | 1 Million Tokens |
+| **Claude** | `claude-3-5-sonnet` | 200k Tokens |
+| **Codex** | `gpt-5.3-codex` | 128k Tokens (Optimized) |

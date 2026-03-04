@@ -1,106 +1,49 @@
-# Sandbox Mode
+# Sandbox Mode (Gemini Only)
 
-Execute code safely in an isolated environment.
+Execute code safely in an isolated environment using Google Gemini's code execution features.
 
 ## What is Sandbox Mode?
 
-Sandbox mode allows Gemini to write and test code in a secure, isolated environment without affecting your system.
+Sandbox mode allows Gemini to write and test code in a secure, isolated environment provided by Google. This is perfect for verifying logic, processing data, or exploring new algorithms without any risk to your local system.
 
 ## Basic Usage
 
 ```
-/gemini-cli:sandbox create a Python script that sorts a list
+/ccg-tool:sandbox prompt:"create a Python script that sorts a list"
 ```
-
-## How It Works
-
-1. **Request** → You ask for code to be created/tested
-2. **Generation** → Gemini writes the code
-3. **Execution** → Code runs in isolated environment
-4. **Results** → Output returned safely
 
 ## Use Cases
 
-### Algorithm Testing
+### Algorithm Verification
 ```
-/gemini-cli:sandbox implement and test quicksort in JavaScript
-```
-
-### Data Processing
-```
-/gemini-cli:sandbox parse this CSV and show statistics: [data]
+/ccg-tool:sandbox prompt:"implement and test quicksort in JavaScript"
 ```
 
-### Proof of Concepts
+### Data Analysis
 ```
-/gemini-cli:sandbox create a working web scraper example
+/ccg-tool:sandbox prompt:"parse this CSV snippet and show statistics: [data]"
 ```
 
-## Safety Features
+## Safety & Isolation
 
-- **Isolated Execution**: No access to your file system
-- **Resource Limits**: CPU and memory constraints
-- **Time Limits**: Prevents infinite loops
-- **No Network**: Cannot make external requests
+- **Isolated Execution**: No access to your local files or environment.
+- **Resource Constraints**: Strict CPU and memory limits.
+- **Network Blocked**: Cannot make external API calls or network requests.
 
 ## Supported Languages
 
-- Python
-- JavaScript/Node.js
-- Ruby
-- Go
-- Java
-- C++
-- More coming soon!
+- **Python** (Native support)
+- **JavaScript/Node.js**
+- **Ruby**, **Go**, **Java**, **C++**
 
-## Best Practices
+## How to Trigger
 
-### 1. Be Specific
-```
-// Good
-create a function that validates email addresses with tests
-
-// Vague
-make something that checks emails
-```
-
-### 2. Include Test Cases
-```
-implement binary search with edge case handling and show test results
-```
-
-### 3. Iterative Development
-```
-// First iteration
-create a basic REST API
-
-// Refine
-add authentication to the API
-
-// Test
-show example requests and responses
-```
+You can use the dedicated sandbox tool or simply ask naturally:
+- "Use gemini sandbox to test this function..."
+- "Have gemini run a script that..."
 
 ## Limitations
 
-- No file system access
-- No network requests
-- Limited execution time (30s)
-- Memory limit (512MB)
-
-## Examples
-
-### Testing Algorithms
-```
-/gemini-cli:sandbox benchmark bubble sort vs quick sort with 1000 items
-```
-
-### Learning Code
-```
-/gemini-cli:sandbox show me how promises work in JavaScript with examples
-```
-
-### Debugging
-```
-/gemini-cli:sandbox why does this code fail: [paste code]
-```
+- **Provider Specific**: Currently only available when using Google Gemini.
+- **Execution Time**: Limited to 30 seconds per run.
+- **Environment**: No persistent state between calls.

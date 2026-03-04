@@ -23,7 +23,7 @@
       
       <div class="hero-actions">
         <a 
-          href="https://github.com/sponsors/jamubc" 
+          href="https://github.com/sponsors/diaz3618" 
           target="_blank"
           rel="noopener"
           class="action-button action-primary"
@@ -35,7 +35,7 @@
         </a>
 
         <a 
-          href="https://github.com/jamubc/gemini-mcp-tool" 
+          href="https://github.com/diaz3618/gemini-mcp-tool" 
           target="_blank"
           rel="noopener"
           class="action-button action-primary"
@@ -47,7 +47,7 @@
         </a>
         
         <a 
-          href="https://ko-fi.com/jamubc" 
+          href="https://ko-fi.com/diaz3618" 
           target="_blank"
           rel="noopener"
           class="action-button action-secondary"

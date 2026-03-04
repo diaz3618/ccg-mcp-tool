@@ -98,7 +98,7 @@ function createChunk(
     estimatedChars
   };
 }
-export function summarizeChunking(chunks: EditChunk[]): string {
+function summarizeChunking(chunks: EditChunk[]): string {
   const totalEdits = chunks.reduce((sum, chunk) => sum + chunk.edits.length, 0);
   const totalChars = chunks.reduce((sum, chunk) => sum + chunk.estimatedChars, 0);
   

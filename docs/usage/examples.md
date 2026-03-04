@@ -1,165 +1,94 @@
 # Real-World Examples
 
-Practical examples of using Gemini MCP Tool in development workflows.
+Practical examples of using **CCG MCP Tool** in development workflows.
 
-## Code Review
+## Multi-Provider Analysis
 
-### Reviewing a Pull Request
+### Comparative Review
 ```
-/gemini-cli:analyze @feature/new-api/*.js review these changes for:
-- Security issues
-- Performance concerns  
-- Code style consistency
-- Missing error handling
-```
+# Get Gemini's perspective on a large file
+/ccg-tool:ask-ai prompt:@src/auth.ts review this security implementation provider:gemini
 
-### Pre-commit Check
-```
-"Gemini, check my staged changes before I commit"
+# Get Codex's precision refactoring
+/ccg-tool:ask-ai prompt:@src/auth.ts refactor this for performance provider:codex model:gpt-5.3-codex
+
+# Get Claude's reasoning for complex logic
+/ccg-tool:ask-ai prompt:@src/auth.ts explain the complex logic here provider:claude
 ```
 
-## Debugging
+## Mistake Mitigation (Research-Grounded)
 
-### Analyzing Error Logs
+### Requirements Grounding
 ```
-/gemini-cli:analyze @logs/error.log @src/api/handler.js 
-why am I getting "undefined is not a function" errors?
+# Prevent hallucinations and misalignment before starting a task
+/ccg-tool:mitigate-mistakes skill:requirements-grounding prompt:@new-feature-req.md
 ```
 
-### Stack Trace Analysis
+### Secure Coding Gate
 ```
-@crash-report.txt gemini, what caused this crash and how do I fix it?
+# Unbiased security audit based on professional journals
+/ccg-tool:mitigate-mistakes skill:secure-coding-and-validation-gate prompt:@src/api/handler.js provider:codex
+```
+
+### Context & Scope Discipline
+```
+# Ensure changes stay within requested boundaries
+/ccg-tool:mitigate-mistakes skill:context-scope-discipline prompt:"Refactor the auth module but don't touch the database"
 ```
 
 ## Architecture Analysis
 
 ### Understanding a New Codebase
 ```
-/gemini-cli:analyze @package.json @src/**/*.js @README.md
-give me an overview of this project's architecture
+/ccg-tool:ask-ai prompt:"@package.json @src/**/*.js @README.md give me an overview of this project's architecture" provider:gemini
 ```
 
 ### Dependency Analysis
 ```
-@package.json @package-lock.json are there any security vulnerabilities or outdated packages?
+/ccg-tool:ask-ai prompt:"@package.json @package-lock.json are there any security vulnerabilities or outdated packages?"
 ```
 
 ## Documentation
 
 ### Generating API Docs
 ```
-/gemini-cli:analyze @routes/api/*.js generate OpenAPI documentation for these endpoints
-```
-
-### README Creation
-```
-@src/**/*.js @package.json create a comprehensive README for this project
+/ccg-tool:ask-ai prompt:"@routes/api/*.js generate OpenAPI documentation for these endpoints"
 ```
 
 ## Testing
 
 ### Writing Tests
 ```
-/gemini-cli:analyze @src/utils/validator.js write comprehensive Jest tests for this module
-```
-
-### Test Coverage Analysis
-```
-@src/**/*.js @test/**/*.test.js what's not being tested?
-```
-
-## Refactoring
-
-### Code Optimization
-```
-/gemini-cli:analyze @src/data-processor.js this function is slow, how can I optimize it?
-```
-
-### Pattern Implementation
-```
-@src/services/*.js refactor these to use the Repository pattern
-```
-
-## Learning
-
-### Understanding Concepts
-```
-/gemini-cli:sandbox show me how OAuth 2.0 works with a working example
-```
-
-### Best Practices
-```
-@src/auth/*.js does this follow security best practices?
-```
-
-## Migration
-
-### Framework Upgrade
-```
-/gemini-cli:analyze @package.json @src/**/*.js 
-what changes are needed to upgrade from Express 4 to Express 5?
-```
-
-### Language Migration
-```
-@legacy/script.js convert this to TypeScript with proper types
+/ccg-tool:ask-ai prompt:"@src/utils/validator.js write comprehensive Jest tests for this module" provider:codex
 ```
 
 ## Security Audit
 
-### Vulnerability Scan
-```
-/gemini-cli:analyze @src/**/*.js @package.json 
-perform a security audit and identify potential vulnerabilities
-```
-
 ### OWASP Check
 ```
-@src/api/**/*.js check for OWASP Top 10 vulnerabilities
+/ccg-tool:mitigate-mistakes skill:secure-coding-and-validation-gate prompt:"@src/api/**/*.js check for OWASP Top 10 vulnerabilities"
 ```
 
-## Performance Analysis
+## Real Project Workflow
 
-### Bottleneck Detection
-```
-/gemini-cli:analyze @src/routes/*.js @src/middleware/*.js
-identify performance bottlenecks in the request pipeline
-```
-
-### Memory Leaks
-```
-@src/**/*.js look for potential memory leaks or inefficient patterns
-```
-
-## Real Project Example
-
-### Full Stack Review
+### Step-by-Step Feature Implementation
 ```bash
-# 1. Architecture overview
-/gemini-cli:analyze @package.json @src/index.js @client/App.jsx 
-explain how the frontend and backend connect
+# 1. Ground requirements first
+/ccg-tool:mitigate-mistakes skill:requirements-grounding prompt:"Add SSO support using SAML"
 
-# 2. API Security
-/gemini-cli:analyze @routes/api/*.js @middleware/auth.js 
-review API security implementation
+# 2. Design the architecture
+/ccg-tool:ask-ai prompt:"@src/auth/ Proposed architecture for SAML integration" provider:claude
 
-# 3. Database optimization
-/gemini-cli:analyze @models/*.js @db/queries/*.sql 
-suggest database optimizations
+# 3. Generate high-precision code
+/ccg-tool:ask-ai prompt:"@src/auth/ Implement SAML strategy" provider:codex
 
-# 4. Frontend performance
-/gemini-cli:analyze @client/**/*.jsx @client/**/*.css 
-how can I improve frontend performance?
-
-# 5. Test coverage
-/gemini-cli:analyze @src/**/*.js @test/**/*.test.js 
-what critical paths lack test coverage?
+# 4. Final Review
+/ccg-tool:mitigate-mistakes skill:code-review-and-change-gate prompt:"@src/auth/saml.strategy.ts review for edge cases"
 ```
 
 ## Tips for Effective Usage
 
-1. **Start Broad, Then Narrow**: Begin with overview, then dive into specifics
-2. **Combine Related Files**: Include configs with source code
-3. **Ask Follow-up Questions**: Build on previous responses
-4. **Use Specific Criteria**: Tell Gemini what to look for
-5. **Iterate on Solutions**: Refine based on suggestions
+1. **Start Broad, Then Narrow**: Use Gemini Pro for the big picture, then switch to Codex or Claude for implementation.
+2. **Combine Related Files**: Include configs with source code for context.
+3. **Use Mitigation Gates**: Always run a gate before and after a major change.
+4. **Compare Providers**: If one provider gets stuck, try another!

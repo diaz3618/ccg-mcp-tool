@@ -2,18 +2,18 @@
 
 ## Natural Language Workflow Integration
 
-The gemini-mcp-tool is designed to seamlessly integrate into your natural workflow with your preferred MCP compliant AI clients, achieved through carefully crafted tools and pipelines.
+The **CCG MCP Tool** is designed to seamlessly integrate into your natural workflow with your preferred MCP-compliant AI clients, achieved through carefully crafted tools and pipelines.
 
-Claude automatically decides when to use `ask-gemini` based on context:
+Claude automatically decides when to use `ask-ai` (or `ask-gemini`) based on context:
 
-- `🔍 comparative analysis` - different AI perspectives for validation
-- `🛠️ leveraging extra tools` - Gemini's search and memory functions  
-- `📋 code review & big changes` - second opinions on implementation
-- `💡 creative problem solving` - brainstorming and ideation
+- comparative analysis - different AI perspectives (Gemini, Codex, Claude) for validation
+- leveraging extra tools - Multi-provider search and reasoning functions
+- code review & big changes - second opinions on implementation with research-grounded gates
+- creative problem solving - brainstorming and ideation across different AI frameworks
 
-This intelligent selection enhances your workflow exactly when Gemini's capabilities add value.
+This intelligent selection enhances your workflow exactly when the selected AI's capabilities add value.
 
-<div align="center">⇣ when ask-gemini gets called ↴</div>
+<div align="center">When ask-ai gets called:</div>
 <DiagramModal>
 
 ```mermaid
@@ -26,9 +26,9 @@ config:
 flowchart LR
     subgraph main
         direction TB
-        A[You] --> |"ask gemini..."| B([**Claude**])
-        B -..-> |"invokes 'ask-gemini'"| C["Gemini-MCP-Tool"]
-        C --> |"spawn!"| D[Gemini-CLI]
+        A[You] --> |"ask ai..."| B([**Claude**])
+        B -..-> |"invokes 'ask-ai'"| C["CCG-MCP-Tool"]
+        C --> |"spawn!"| D[AI-CLI]
         D e1@-.-> |"response"| C
         C -.-> |"response"| B
         B -.-> |"summary response"| A

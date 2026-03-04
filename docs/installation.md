@@ -1,23 +1,26 @@
 # Installation
 
-Multiple ways to install Gemini MCP Tool, depending on your needs.
+Multiple ways to install **CCG MCP Tool**, depending on your needs.
 
 ## Prerequisites
 
-- Node.js v16.0.0 or higher
-- Claude Desktop or Claude Code with MCP support
-- Gemini CLI installed (`npm install -g @google/gemini-cli`)
+- **Node.js** v16.0.0 or higher
+- **Claude Desktop** or **Claude Code** with MCP support
+- **AI CLI Tools** (at least one):
+  - **Gemini CLI**: `npm install -g @google/gemini-cli`
+  - **Codex CLI**: `npm install -g @openai/codex`
+  - **Claude Code**: `npm install -g @anthropics/claude-code`
 
 ## Method 1: NPX (Recommended)
 
-No installation needed - runs directly:
+No manual installation needed - runs directly:
 
 ```json
 {
   "mcpServers": {
-    "gemini-cli": {
+    "ccg-tool": {
       "command": "npx",
-      "args": ["-y", "gemini-mcp-tool"]
+      "args": ["-y", "ccg-mcp-tool"]
     }
   }
 }
@@ -25,25 +28,29 @@ No installation needed - runs directly:
 
 ## Method 2: Global Installation
 
+You can add it directly to Claude Code:
+
 ```bash
-claude mcp add gemini-cli -- npx -y gemini-mcp-tool
+claude mcp add ccg-tool -- npx -y ccg-mcp-tool
 ```
 
-Then configure:
+Or configure manually if installed globally via `npm install -g ccg-mcp-tool`:
 ```json
 {
   "mcpServers": {
-    "gemini-cli": {
-      "command": "gemini-mcp"
+    "ccg-tool": {
+      "command": "ccg-mcp"
     }
   }
 }
 ```
 
-## Method 3: Local Project
+## Startup Arguments (Configuration)
 
-```bash
-npm install gemini-mcp-tool
+You can set the default provider and model at startup in your MCP configuration:
+
+```json
+"args": ["-y", "ccg-mcp-tool", "--provider", "codex", "--model", "gpt-5.3-codex"]
 ```
 
 See [Getting Started](/getting-started) for full setup instructions.

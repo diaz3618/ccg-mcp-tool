@@ -28,7 +28,7 @@
       
       <div class="support-options">
         <a 
-          href="https://github.com/sponsors/jamubc" 
+          href="https://github.com/sponsors/diaz3618" 
           target="_blank" 
           rel="noopener"
           class="support-button support-button--primary"
@@ -41,7 +41,7 @@
         </a>
 
         <a 
-          href="https://ko-fi.com/jamubc" 
+          href="https://ko-fi.com/diaz3618" 
           target="_blank" 
           rel="noopener"
           class="support-button support-button--secondary"

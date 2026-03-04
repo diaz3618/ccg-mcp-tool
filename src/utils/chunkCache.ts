@@ -147,7 +147,7 @@ function enforceFileLimits(): void {
   }
 }
 
-export function getCacheStats(): { size: number; ttl: number; maxSize: number; cacheDir: string } {
+function getCacheStats(): { size: number; ttl: number; maxSize: number; cacheDir: string } {
   ensureCacheDir();
   let size = 0;
   
@@ -164,7 +164,7 @@ export function getCacheStats(): { size: number; ttl: number; maxSize: number; c
   };
 }
 
-export function clearCache(): void { // !
+function clearCache(): void { // !
   try {
     ensureCacheDir();
     const files = fs.readdirSync(CACHE_DIR);

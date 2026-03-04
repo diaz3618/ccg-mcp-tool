@@ -4,16 +4,19 @@ import {
   ERROR_MESSAGES, 
   STATUS_MESSAGES, 
   MODELS, 
-  CLI
+  CLI,
+  PROVIDERS
 } from '../constants.js';
+import { ServerConfig } from '../config.js';
 
 import { parseChangeModeOutput, validateChangeModeEdits } from './changeModeParser.js';
 import { formatChangeModeResponse, summarizeChangeModeEdits } from './changeModeTranslator.js';
 import { chunkChangeModeEdits } from './changeModeChunker.js';
 import { cacheChunks, getChunks } from './chunkCache.js';
 
-export async function executeGeminiCLI(
+export async function executeAICLI(
   prompt: string,
+  provider: string = ServerConfig.defaultProvider,
   model?: string,
   sandbox?: boolean,
   changeMode?: boolean,
@@ -21,7 +24,7 @@ export async function executeGeminiCLI(
 ): Promise<string> {
   let prompt_processed = prompt;
   
-  if (changeMode) {
+  if (provider === PROVIDERS.GEMINI && changeMode) {
     prompt_processed = prompt.replace(/file:(\S+)/g, '@$1');
     
     const changeModeInstructions = `
@@ -88,21 +91,35 @@ ${prompt_processed}
   }
   
   const args = [];
-  if (model) { args.push(CLI.FLAGS.MODEL, model); }
-  if (sandbox) { args.push(CLI.FLAGS.SANDBOX); }
-  
-  // Ensure @ symbols work cross-platform by wrapping in quotes if needed
-  const finalPrompt = prompt_processed.includes('@') && !prompt_processed.startsWith('"') 
-    ? `"${prompt_processed}"` 
-    : prompt_processed;
+  let command: string = CLI.COMMANDS.GEMINI;
+
+  if (provider === PROVIDERS.CODEX) {
+    command = CLI.COMMANDS.CODEX;
+    if (model) { args.push(CLI.FLAGS.MODEL, model); }
+    args.push(prompt_processed);
+  } else if (provider === PROVIDERS.CLAUDE) {
+    command = CLI.COMMANDS.CLAUDE;
+    // Assuming Claude Code handles the prompt as a trailing argument
+    // or standard input. For now, we'll try it as a trailing argument.
+    args.push(prompt_processed);
+  } else {
+    // Default to Gemini
+    if (model) { args.push(CLI.FLAGS.MODEL, model); }
+    if (sandbox) { args.push(CLI.FLAGS.SANDBOX); }
     
-  args.push(CLI.FLAGS.PROMPT, finalPrompt);
+    // Ensure @ symbols work cross-platform by wrapping in quotes if needed
+    const finalPrompt = prompt_processed.includes('@') && !prompt_processed.startsWith('"') 
+      ? `"${prompt_processed}"` 
+      : prompt_processed;
+      
+    args.push(CLI.FLAGS.PROMPT, finalPrompt);
+  }
   
   try {
-    return await executeCommand(CLI.COMMANDS.GEMINI, args, onProgress);
+    return await executeCommand(command, args, onProgress);
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    if (errorMessage.includes(ERROR_MESSAGES.QUOTA_EXCEEDED) && model !== MODELS.FLASH) {
+    if (provider === PROVIDERS.GEMINI && errorMessage.includes(ERROR_MESSAGES.QUOTA_EXCEEDED) && model !== MODELS.FLASH) {
       Logger.warn(`${ERROR_MESSAGES.QUOTA_EXCEEDED}. Falling back to ${MODELS.FLASH}.`);
       await sendStatusMessage(STATUS_MESSAGES.FLASH_RETRY);
       const fallbackArgs = [];

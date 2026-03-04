@@ -2,37 +2,28 @@
 
 ## General
 
-### What is Gemini MCP Tool?
-A bridge between Claude Desktop and Google's Gemini AI, enabling you to use Gemini's powerful capabilities directly within Claude.
+### What is CCG MCP Tool?
+A bridge between MCP-compatible clients (like Claude Code) and three AI giants: **Claude Code**, **OpenAI Codex**, and **Google Gemini**.
 
-### Does it support windows?
-Windows testing is underway, some users have reported success and other failures.
-
-### Why use this instead of Gemini directly?
-- Integrated into your existing AI workflow
-- File analysis with @ syntax
-- Reduced context switching (gemini can store and recall memories!)
-- Best of both: Leverages both AIs' strengths
+### Why use this instead of the CLIs directly?
+- **Unified Interface**: One MCP server for all your favorite coding agents.
+- **Workflow Integration**: No context switching—use them inside your primary IDE or chat interface.
+- **Mistake Mitigation**: Research-grounded gates to prevent common AI coding errors.
+- **Multi-Provider Strategy**: Use the right tool for the job (e.g. Gemini for context, Codex for precision).
 
 ### Is it free?
-The tool is open source and free. You need:
-- Gemini API key (has free tier) or Google Account
-- Claude Desktop or Claude Code or any MCP client
+The tool itself is open-source and free. You will need the respective CLI tools and access/API keys for the underlying models.
 
 ## Setup
 
-### Do I need to install Gemini CLI separately?
-Yes, install it with:
-```bash
-npm install -g @google/gemini-cli
-```
-Then, run "gemini" and complete auth.
+### Which CLI tools do I need?
+At least one of the following:
+- **Gemini CLI**: `npm install -g @google/gemini-cli`
+- **Codex CLI**: `npm install -g @openai/codex`
+- **Claude Code**: `npm install -g @anthropics/claude-code`
 
-### Can I use this with Claude Code?
+### Can I use this with Claude Desktop?
 Yes! It works with both Claude Desktop and Claude Code.
-
-### What Node.js version do I need?
-Node.js v16.0.0 or higher.
 
 ## Usage
 
@@ -41,91 +32,60 @@ It's how you reference files for analysis:
 - `@file.js` - Single file
 - `@src/*.js` - Multiple files
 - `@**/*.ts` - All TypeScript files
-- *new:* `file:index.html` now works, fully bypassing @ integration
 
-### Can I analyze multiple files? What about ALL the files?
-Yes! Gemini's 1M token context allows analyzing entire codebases.
+### How do I switch providers?
+Use the `provider` argument in your tool calls (e.g. `provider:codex`) or set a default in your MCP configuration using the `--provider` startup argument.
 
 ### Which model should I use?
-- **Daily work**: Gemini Pro
-- **Large analysis**: Gemini Pro
-- **Quick tasks**: Gemini Flash
+- **Large Codebase Analysis**: Gemini Pro
+- **Precise Refactoring**: OpenAI Codex
+- **Complex Reasoning & Bugs**: Claude 3.5 Sonnet
 
 ## Features
 
-### What languages are supported?
-Any language code or human.
+### What is "Mistake Mitigation"?
+It's a set of 9 research-grounded skills (e.g. `requirements-grounding`, `secure-coding`) that analyze your task or code for common failure modes identified in academic studies of AI coding agents.
 
 ### Does it work offline?
-No, it requires internet to connect to Gemini API.
+No, it requires an internet connection to communicate with the respective AI providers via their CLI tools.
 
 ## Troubleshooting
 
 ### Why is it slow?
-- Large files take time to process
-- Try using Flash model for speed
-- Check your internet connection
+Analyzing large codebases takes time. Gemini Pro can handle millions of tokens, but it's not instantaneous. Try using Gemini Flash or Codex for smaller, targeted tasks.
 
-### Can I use my own models?
-Currently supports official Gemini models only.<br>
-*--> opencode integration coming soon*
-
-### Can I add new features?
-Yes! Check issues or propose your own ideas.
+### "Command not found"
+Ensure the underlying CLI tool (gemini, codex, or claude) is in your system PATH and accessible from your terminal.
 
 ## Privacy & Security
 
-### Is my code sent to Google?
-Only when you explicitly use Gemini commands. Code is processed according to Google's privacy policy.
-
-### Are credentials secure?
-- We never look at or touch your keys!
-
-### Can I use this for proprietary code?
-Check your organization's policies and Google's Gemini API terms of service.
-
-## Advanced
-
-### Can I use this in CI/CD?
-Not recommended - designed for interactive development.
+### Is my code secure?
+Code is processed according to the privacy policies of the respective providers (Google, OpenAI, Anthropic). We do not store or transmit your code anywhere else.
 
 <div style="text-align: center;">
 
-## Why Gemini MCP?
+## Why CCG MCP?
 
 </div>
 
-By bridging Claude Desktop with Google's powerful models, Gemini MCP Tool lets you leverage the following advanced capabilities right in your existing workflow:
-
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin: 24px 0;">
   <div style="background: var(--vp-c-bg-soft); padding: 16px; border-radius: 8px; border: 1px solid var(--vp-c-divider);">
-    <h4 style="margin: 0 0 8px 0; color: var(--vp-c-brand);">💰 Cost-Effective</h4>
-    <p style="margin: 0; font-size: 14px; line-height: 1.5;">Delegate tasks to a more cost-effective model to reduce expensive token usage.</p>
+    <h4 style="margin: 0 0 8px 0; color: var(--vp-c-brand);">Research-Grounded</h4>
+    <p style="margin: 0; font-size: 14px; line-height: 1.5;">Built-in mitigation gates based on academic journals to prevent common AI mistakes.</p>
   </div>
   
   <div style="background: var(--vp-c-bg-soft); padding: 16px; border-radius: 8px; border: 1px solid var(--vp-c-divider);">
-    <h4 style="margin: 0 0 8px 0; color: var(--vp-c-brand);">🎯 Multimodal Native</h4>
-    <p style="margin: 0; font-size: 14px; line-height: 1.5;">Process text, images, audio, video, and code seamlessly within your workflow.</p>
+    <h4 style="margin: 0 0 8px 0; color: var(--vp-c-brand);">Multi-Provider</h4>
+    <p style="margin: 0; font-size: 14px; line-height: 1.5;">Claude, Codex, and Gemini all in one place. Choose your giant per-request.</p>
   </div>
   
   <div style="background: var(--vp-c-bg-soft); padding: 16px; border-radius: 8px; border: 1px solid var(--vp-c-divider);">
-    <h4 style="margin: 0 0 8px 0; color: var(--vp-c-brand);">🚀 High Performance</h4>
-    <p style="margin: 0; font-size: 14px; line-height: 1.5;">Leverage a large context window and powerful built-in tools, including web search.</p>
-  </div>
-  
-  <div style="background: var(--vp-c-bg-soft); padding: 16px; border-radius: 8px; border: 1px solid var(--vp-c-divider);">
-    <h4 style="margin: 0 0 8px 0; color: var(--vp-c-brand);">🧠 Advanced Reasoning</h4>
-    <p style="margin: 0; font-size: 14px; line-height: 1.5;">Gain a different analytical perspective for sophisticated analysis of complex information.</p>
-  </div>
-  
-  <div style="background: var(--vp-c-bg-soft); padding: 16px; border-radius: 8px; border: 1px solid var(--vp-c-divider);">
-    <h4 style="margin: 0 0 8px 0; color: var(--vp-c-brand);">🔒 Privacy First</h4>
-    <p style="margin: 0; font-size: 14px; line-height: 1.5;">Open-source and telemetry-free. Committed to transparency and responsible AI.</p>
+    <h4 style="margin: 0 0 8px 0; color: var(--vp-c-brand);">Large Context</h4>
+    <p style="margin: 0; font-size: 14px; line-height: 1.5;">Leverage Gemini's 2M token window to analyze entire repositories at once.</p>
   </div>
 </div>
 
 ## More Questions?
 
-- Check [Documentation](/)
-- Browse [GitHub Issues](https://github.com/jamubc/gemini-mcp-tool/issues)
-- Ask in [Discussions](https://github.com/jamubc/gemini-mcp-tool/discussions)
+- Check [GitHub Issues](https://github.com/diaz3618/ccg-mcp-tool/issues)
+- Browse the [Best Practices](/usage/best-practices) guide

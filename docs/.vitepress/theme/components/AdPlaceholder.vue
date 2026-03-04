@@ -10,7 +10,7 @@
       </div>
     </div>
     <a 
-      href="https://github.com/sponsors/jamubc" 
+      href="https://github.com/sponsors/diaz3618" 
       class="placeholder-cta"
       target="_blank"
       rel="noopener"

@@ -1,6 +1,38 @@
 # Best Practices
 
-Get the most out of Gemini MCP Tool with these proven practices.
+Get the most out of **CCG MCP Tool** with these proven practices.
+
+## Mistake Mitigation (Critical)
+
+### Apply Mitigation Gates Early
+Before starting any significant development task, run the `requirements-grounding` skill to ensure alignment.
+```bash
+/ccg-tool:mitigate-mistakes skill:requirements-grounding prompt:@new-feature-req.md
+```
+
+### Unbiased Security Reviews
+Use the `secure-coding-and-validation-gate` skill periodically during development. This skill is grounded in academic research and provides an unbiased perspective on security risks.
+```bash
+/ccg-tool:mitigate-mistakes skill:secure-coding-and-validation-gate prompt:@src/api/handler.js
+```
+
+### Deterministic Validation
+When a task is complete, use the `deterministic-validation-gate` to verify that all requirements have been met and no new issues have been introduced.
+
+## Multi-Provider Strategy
+
+### Leverage Provider Strengths
+- **Claude**: Use for complex reasoning and root-cause analysis (RCA) of difficult bugs.
+- **Codex**: Use for precise refactoring and small-to-medium code generation tasks.
+- **Gemini**: Use for project-wide architecture analysis and large-scale code reviews (2M token window).
+
+### Comparative Analysis
+When dealing with a particularly tricky problem, ask multiple providers for their perspective and compare the results:
+```bash
+# Compare Gemini and Codex
+/ccg-tool:ask-ai prompt:@src/complex-logic.js refactor this provider:gemini
+/ccg-tool:ask-ai prompt:@src/complex-logic.js refactor this provider:codex
+```
 
 ## File Selection
 
@@ -49,10 +81,10 @@ Include configuration with implementation:
 
 ## Token Management
 
-### Gemini Model Selection
-- **Quick tasks**: Use Flash (1M tokens)
-- **Full analysis**: Use Pro (2M tokens)
-- **Simple queries**: Use Flash-8B
+### Provider Selection
+- **Large Context**: Use Gemini Pro (2M tokens)
+- **Fast Tasks**: Use Gemini Flash or Codex
+- **Complex Reasoning**: Use Claude 3.5 Sonnet
 
 ### Efficient File Inclusion
 ```bash
@@ -76,8 +108,7 @@ Include configuration with implementation:
 ### Save Context Between Sessions
 ```bash
 # Create a context file
-/gemini-cli:analyze @previous-analysis.md @src/new-feature.js 
-continue from our last discussion
+/ccg-tool:ask-ai prompt:"@previous-analysis.md @src/new-feature.js continue from our last discussion"
 ```
 
 ## Error Handling
@@ -120,7 +151,7 @@ Always include full error messages and stack traces when debugging.
 
 ### Comprehensive Security Checks
 ```bash
-/gemini-cli:analyze @src/**/*.js @package.json @.env.example
+/ccg-tool:ask-ai prompt:"@src/**/*.js @package.json @.env.example check for vulnerabilities"
 - Check for hardcoded secrets
 - Review authentication logic
 - Identify OWASP vulnerabilities
@@ -159,49 +190,31 @@ Always include full error messages and stack traces when debugging.
 ## Common Pitfalls to Avoid
 
 ### 1. Over-broad Queries
-❌ `@**/* "fix all issues"`
-✅ `@src/auth/*.js "fix security issues in authentication"`
+Avoid: `@**/* "fix all issues"`
+Use: `@src/auth/*.js "fix security issues in authentication"`
 
 ### 2. Missing Context
-❌ `"why doesn't this work?"`
-✅ `@error.log @config.js "why doesn't database connection work?"`
+Avoid: `"why doesn't this work?"`
+Use: `@error.log @config.js "why doesn't database connection work?"`
 
 ### 3. Ignoring Model Limits
-❌ Trying to analyze 5M tokens with Flash model
-✅ Using Pro for large codebases, Flash for single files
+Avoid: Trying to analyze 5M tokens with Flash model
+Use: Using Pro for large codebases, Flash for single files
 
 ### 4. Vague Success Criteria
-❌ "make it better"
-✅ "improve performance to handle 1000 requests/second"
+Avoid: "make it better"
+Use: "improve performance to handle 1000 requests/second"
 
 ## Workflow Integration
 
 ### Pre-commit Reviews
 ```bash
-alias gemini-review='/gemini-cli:analyze @$(git diff --staged --name-only) review staged changes'
+alias ccg-review='/ccg-tool:ask-ai prompt:"@$(git diff --staged --name-only) review staged changes"'
 ```
-
-### Daily Development
-1. Morning: Architecture review
-2. Before PR: Code review
-3. When stuck: Debugging help
-4. End of day: Documentation updates
 
 ## Advanced Tips
 
-### 1. Create Analysis Templates
-Save common queries for reuse:
-```bash
-# security-check.txt
-Check for:
-- SQL injection
-- XSS vulnerabilities
-- Authentication bypasses
-- Rate limiting
-- Input validation
-```
-
-### 2. Chain Operations
+### 1. Chain Operations
 ```bash
 "First analyze the bug" → 
 "Now write a fix" → 
@@ -209,8 +222,8 @@ Check for:
 "Update documentation"
 ```
 
-### 3. Learn from Patterns
-When Gemini suggests improvements, ask:
+### 2. Learn from Patterns
+When a provider suggests improvements, ask:
 ```bash
 "explain why this approach is better"
 "show me more examples of this pattern"

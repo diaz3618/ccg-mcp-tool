@@ -4,56 +4,63 @@ Complete list of available commands and their usage.
 
 ## Slash Commands
 
-### `/gemini-cli:analyze`
-Analyze files or ask questions about code.
+The default prefix is `/ccg-tool` (configurable in your client).
+
+### `/ccg-tool:ask-ai` (or `/ccg-tool:ask-gemini`)
+Analyze files or ask questions about code using various AI providers.
 
 ```
-/gemini-cli:analyze @file.js explain this code
-/gemini-cli:analyze @src/*.ts find security issues
-/gemini-cli:analyze how do I implement authentication?
+/ccg-tool:ask-ai prompt:@file.js explain this code provider:codex
+/ccg-tool:ask-ai prompt:@src/*.ts find security issues provider:gemini model:gemini-2.5-flash
+/ccg-tool:ask-ai prompt:how do I implement authentication? provider:claude
 ```
 
-### `/gemini-cli:sandbox`
-Execute code in a safe environment.
+**Arguments:**
+- `prompt` (required): Your request. Use `@` for files.
+- `provider`: `gemini`, `codex`, or `claude`. Defaults to server startup config.
+- `model`: Specific model for the provider.
+- `sandbox`: (Gemini only) Run in isolated environment.
+- `changeMode`: (Gemini only) Returns structured edits.
+
+### `/ccg-tool:mitigate-mistakes`
+Apply research-grounded mitigation gates to your code or task.
 
 ```
-/gemini-cli:sandbox create a Python fibonacci generator
-/gemini-cli:sandbox test this function: [code]
+/ccg-tool:mitigate-mistakes skill:requirements-grounding prompt:@new-feature.md
+/ccg-tool:mitigate-mistakes skill:secure-coding-and-validation-gate prompt:@api.js provider:codex
 ```
 
-### `/gemini-cli:help`
+**Arguments:**
+- `skill`: The gate to apply (e.g., `requirements-grounding`, `secure-coding`, etc.)
+- `prompt`: The task or code to analyze.
+- `provider`: Which AI to use for assessment.
+
+### `/ccg-tool:brainstorm`
+Generate novel ideas with dynamic context gathering.
+
+```
+/ccg-tool:brainstorm prompt:New feature for my app methodology:scamper domain:software
+/ccg-tool:brainstorm prompt:Marketing strategy domain:marketing provider:claude
+```
+
+### `/ccg-tool:sandbox`
+Execute code in a safe environment (Gemini only).
+
+```
+/ccg-tool:sandbox prompt:create a Python fibonacci generator
+```
+
+### `/ccg-tool:help`
 Show help information and available tools.
-
-```
-/gemini-cli:help
-/gemini-cli:help analyze
-```
-
-### `/gemini-cli:ping`
-Test connectivity with Gemini.
-
-```
-/gemini-cli:ping
-/gemini-cli:ping "Custom message"
-```
-
-## Command Structure
-
-```
-/gemini-cli:<tool> [options] <arguments>
-```
-
-- **tool**: The action to perform (analyze, sandbox, help, ping)
-- **options**: Optional flags (coming soon)
-- **arguments**: Input text, files, or questions
 
 ## Natural Language Alternative
 
 Instead of slash commands, you can use natural language:
 
 - "Use gemini to analyze index.js"
-- "Ask gemini to create a test file"
-- "Have gemini explain this error"
+- "Ask codex to refactor this @file.ts"
+- "Have claude explain this error"
+- "Mitigate mistakes for my @code.js using requirements-grounding"
 
 ## File Patterns
 
@@ -61,12 +68,6 @@ Instead of slash commands, you can use natural language:
 ```
 @README.md
 @src/index.js
-@test/unit.test.ts
-```
-
-### Multiple Files
-```
-@file1.js @file2.js @file3.js
 ```
 
 ### Wildcards
@@ -76,32 +77,8 @@ Instead of slash commands, you can use natural language:
 @**/*.test.js     # All test files recursively
 ```
 
-### Directory
-```
-@src/             # All files in src
-@test/unit/       # All files in test/unit
-```
-
-## Advanced Usage
-
-### Combining Files and Questions
-```
-/gemini-cli:analyze @package.json @src/index.js is the entry point configured correctly?
-```
-
-### Complex Queries
-```
-/gemini-cli:analyze @src/**/*.js @test/**/*.test.js what's the test coverage?
-```
-
-### Code Generation
-```
-/gemini-cli:analyze @models/user.js generate TypeScript types for this model
-```
-
 ## Tips
 
-1. **Start Simple**: Begin with single files before using patterns
-2. **Be Specific**: Clear questions get better answers
-3. **Use Context**: Include relevant files for better analysis
-4. **Iterate**: Refine your queries based on responses
+1. **Provider Selection**: Use Gemini for large codebase analysis, Codex for precision refactoring, and Claude for complex reasoning.
+2. **Mitigation Skills**: Always run `requirements-grounding` before starting a complex task.
+3. **Sandbox Mode**: Use sandbox mode when asking AI to run or test generated scripts.

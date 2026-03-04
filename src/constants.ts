@@ -1,5 +1,3 @@
-
-
 // Logging
 export const LOG_PREFIX = "[GMCPT]";
 
@@ -20,7 +18,7 @@ export const STATUS_MESSAGES = {
   GEMINI_RESPONSE: "Gemini response:",
   // Timeout prevention messages
   PROCESSING_START: "🔍 Starting analysis (may take 5-15 minutes for large codebases)",
-  PROCESSING_CONTINUE: "⏳ Still processing... Gemini is working on your request",
+  PROCESSING_CONTINUE: "⏳ Still processing... AI is working on your request",
   PROCESSING_COMPLETE: "✅ Analysis completed successfully",
 } as const;
 
@@ -28,6 +26,15 @@ export const STATUS_MESSAGES = {
 export const MODELS = {
   PRO: "gemini-2.5-pro",
   FLASH: "gemini-2.5-flash",
+  CODEX: "gpt-5.3-codex",
+  CLAUDE: "claude-3-5-sonnet",
+} as const;
+
+// Providers
+export const PROVIDERS = {
+  GEMINI: "gemini",
+  CODEX: "codex",
+  CLAUDE: "claude",
 } as const;
 
 // MCP Protocol Constants
@@ -62,6 +69,8 @@ export const CLI = {
   // Command names
   COMMANDS: {
     GEMINI: "gemini",
+    CODEX: "codex",
+    CLAUDE: "claude",
     ECHO: "echo",
   },
   // Command flags
@@ -70,12 +79,14 @@ export const CLI = {
     SANDBOX: "-s",
     PROMPT: "-p",
     HELP: "-help",
+    PROVIDER: "--provider",
   },
   // Default values
   DEFAULTS: {
     MODEL: "default", // Fallback model used when no specific model is provided
     BOOLEAN_TRUE: "true",
     BOOLEAN_FALSE: "false",
+    PROVIDER: PROVIDERS.GEMINI,
   },
 } as const;
 
@@ -83,6 +94,7 @@ export const CLI = {
 // (merged PromptArguments and ToolArguments)
 export interface ToolArguments {
   prompt?: string;
+  provider?: string;
   model?: string;
   sandbox?: boolean | string;
   changeMode?: boolean | string;
@@ -91,6 +103,7 @@ export interface ToolArguments {
   message?: string; // For Ping tool -- Un-used.
   
   // --> new tool
+  skill?: string; // For mistake mitigator tool
   methodology?: string; // Brainstorming framework to use
   domain?: string; // Domain context for specialized brainstorming
   constraints?: string; // Known limitations or requirements

@@ -1,7 +1,9 @@
 import { z } from 'zod';
 import { UnifiedTool } from './registry.js';
 import { Logger } from '../utils/logger.js';
-import { executeGeminiCLI } from '../utils/geminiExecutor.js';
+import { executeAICLI } from '../utils/aiExecutor.js';
+import { PROVIDERS } from '../constants.js';
+import { ServerConfig } from '../config.js';
 
 function buildBrainstormPrompt(config: {
   prompt: string;
@@ -117,7 +119,8 @@ ${domain ? `Given the ${domain} domain, I'll apply the most effective combinatio
 
 const brainstormArgsSchema = z.object({
   prompt: z.string().min(1).describe("Primary brainstorming challenge or question to explore"),
-  model: z.string().optional().describe("Optional model to use (e.g., 'gemini-2.5-flash'). If not specified, uses the default model (gemini-2.5-pro)."),
+  provider: z.string().optional().default(ServerConfig.defaultProvider).describe(`Provider to use (e.g., 'gemini', 'codex', 'claude'). Defaults to server config ('${ServerConfig.defaultProvider}').`),
+  model: z.string().optional().describe(`Optional model to use (e.g., 'gemini-2.5-flash'). If not specified, uses the server default (${ServerConfig.defaultModel || 'provider default'}).`),
   methodology: z.enum(['divergent', 'convergent', 'scamper', 'design-thinking', 'lateral', 'auto']).default('auto').describe("Brainstorming framework: 'divergent' (generate many ideas), 'convergent' (refine existing), 'scamper' (systematic triggers), 'design-thinking' (human-centered), 'lateral' (unexpected connections), 'auto' (AI selects best)"),
   domain: z.string().optional().describe("Domain context for specialized brainstorming (e.g., 'software', 'business', 'creative', 'research', 'product', 'marketing')"),
   constraints: z.string().optional().describe("Known limitations, requirements, or boundaries (budget, time, technical, legal, etc.)"),
@@ -128,16 +131,16 @@ const brainstormArgsSchema = z.object({
 
 export const brainstormTool: UnifiedTool = {
   name: "brainstorm",
-  description: "Generate novel ideas with dynamic context gathering. --> Creative frameworks (SCAMPER, Design Thinking, etc.), domain context integration, idea clustering, feasibility analysis, and iterative refinement.",
+  description: "Generate novel ideas with dynamic context gathering. --> Creative frameworks (SCAMPER, Design Thinking, etc.), domain context integration, idea clustering, feasibility analysis, and iterative refinement. Supports Gemini, Codex, and Claude.",
   zodSchema: brainstormArgsSchema,
   prompt: {
     description: "Generate structured brainstorming prompt with methodology-driven ideation, domain context integration, and analytical evaluation framework",
   },
-  category: 'gemini',
+  category: 'utility',
   execute: async (args, onProgress) => {
     const {
       prompt,
-      model,
+      provider,
       methodology = 'auto',
       domain,
       constraints,
@@ -145,6 +148,7 @@ export const brainstormTool: UnifiedTool = {
       ideaCount = 12,
       includeAnalysis = true
     } = args;
+    const model = args.model || ServerConfig.defaultModel;
 
     if (!prompt?.trim()) {
       throw new Error("You must provide a valid brainstorming challenge or question to explore");
@@ -160,12 +164,12 @@ export const brainstormTool: UnifiedTool = {
       includeAnalysis: includeAnalysis as boolean
     });
 
-    Logger.debug(`Brainstorm: Using methodology '${methodology}' for domain '${domain || 'general'}'`);
+    Logger.debug(`Brainstorm: Using provider '${provider}' with methodology '${methodology}' for domain '${domain || 'general'}'`);
     
     // Report progress to user
-    onProgress?.(`Generating ${ideaCount} ideas via ${methodology} methodology...`);
+    onProgress?.(`Generating ${ideaCount} ideas via ${methodology} methodology using ${provider}...`);
     
-    // Execute with Gemini
-    return await executeGeminiCLI(enhancedPrompt, model as string | undefined, false, false, onProgress);
+    // Execute with specified provider
+    return await executeAICLI(enhancedPrompt, provider as string | undefined, model as string | undefined, false, false, onProgress);
   }
 };
