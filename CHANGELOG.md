@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-03-04
+- **Initial release** of `@diazstg/ccg-mcp-tool`
+- Multi-provider AI CLI integration: Gemini, Codex, and Claude Code
+- `ask-ai` tool with `--provider`, `--model`, `--sandbox`, and change mode support
+- `brainstorm`, `analyze`, `fetch-chunk`, `ping`, and `help` tools
+- Structured change mode output (FILE:OLD/NEW blocks) for programmatic code editing
+- Chunked response cache for large AI outputs
+
 ## [1.2.0] - 2026-03-03
 - **Rebranding**: Project renamed to **CCG MCP Tool** (Claude Code/Codex/Gemini).
 - **Multi-Provider Support**: Integrated **OpenAI Codex** and **Anthropic Claude Code** CLI alongside Google Gemini.
