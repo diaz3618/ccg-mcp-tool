@@ -4,7 +4,7 @@
 
 The **CCG MCP Tool** is designed to seamlessly integrate into your natural workflow with your preferred MCP-compliant AI clients, achieved through carefully crafted tools and pipelines.
 
-Claude automatically decides when to use `ask-ai` (or `ask-gemini`) based on context:
+Claude automatically decides when to use `ask-ai` based on context:
 
 - comparative analysis - different AI perspectives (Gemini, Codex, Claude) for validation
 - leveraging extra tools - Multi-provider search and reasoning functions

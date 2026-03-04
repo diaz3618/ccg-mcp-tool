@@ -9,19 +9,19 @@ Sandbox mode allows Gemini to write and test code in a secure, isolated environm
 ## Basic Usage
 
 ```
-/ccg-tool:sandbox prompt:"create a Python script that sorts a list"
+/ccg-tool:ask-ai prompt:"create a Python script that sorts a list" sandbox:true
 ```
 
 ## Use Cases
 
 ### Algorithm Verification
 ```
-/ccg-tool:sandbox prompt:"implement and test quicksort in JavaScript"
+/ccg-tool:ask-ai prompt:"implement and test quicksort in JavaScript" sandbox:true
 ```
 
 ### Data Analysis
 ```
-/ccg-tool:sandbox prompt:"parse this CSV snippet and show statistics: [data]"
+/ccg-tool:ask-ai prompt:"parse this CSV snippet and show statistics: [data]" sandbox:true
 ```
 
 ## Safety & Isolation
@@ -38,7 +38,7 @@ Sandbox mode allows Gemini to write and test code in a secure, isolated environm
 
 ## How to Trigger
 
-You can use the dedicated sandbox tool or simply ask naturally:
+You can use the `sandbox` parameter on `ask-ai` or simply ask naturally:
 - "Use gemini sandbox to test this function..."
 - "Have gemini run a script that..."
 

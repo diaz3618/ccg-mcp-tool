@@ -35,7 +35,7 @@
         </a>
 
         <a 
-          href="https://github.com/diaz3618/gemini-mcp-tool" 
+          href="https://github.com/diaz3618/ccg-mcp-tool" 
           target="_blank"
           rel="noopener"
           class="action-button action-primary"

@@ -4,14 +4,11 @@
 <div align="center">
 
 [![GitHub Release](https://img.shields.io/github/v/release/diaz3618/ccg-mcp-tool?logo=github&label=GitHub)](https://github.com/diaz3618/ccg-mcp-tool/releases)
-[![npm version](https://img.shields.io/npm/v/ccg-mcp-tool)](https://www.npmjs.com/package/ccg-mcp-tool)
-[![npm downloads](https://img.shields.io/npm/dt/ccg-mcp-tool)](https://www.npmjs.com/package/ccg-mcp-tool)
+[![npm version](https://img.shields.io/npm/v/%40diazstg%2Fccg-mcp-tool)](https://www.npmjs.com/package/@diazstg/ccg-mcp-tool)
+[![npm downloads](https://img.shields.io/npm/dt/%40diazstg%2Fccg-mcp-tool)](https://www.npmjs.com/package/@diazstg/ccg-mcp-tool)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Open Source](https://img.shields.io/badge/Open%20Source-❤️-red.svg)](https://github.com/diaz3618/ccg-mcp-tool)
 
 </div>
-
-> 📚 **[View Full Documentation](https://diaz3618.github.io/ccg-mcp-tool/)** - Search me!, Examples, FAQ, Troubleshooting, Best Practices
 
 This is a powerful Model Context Protocol (MCP) server that integrates multiple AI coding agents—**Anthropic Claude Code**, **OpenAI Codex**, and **Google Gemini**—directly into your workflow. It enables seamless cross-provider analysis, leveraging Gemini's massive token window, Codex's specialized coding capabilities, and Claude's advanced reasoning.
 
@@ -19,7 +16,7 @@ This is a powerful Model Context Protocol (MCP) server that integrates multiple 
 - Brainstorm ideas with multi-provider frameworks.
 - **New:** Apply research-grounded mitigation skills to avoid common AI coding mistakes.
 
-## [![Claude](https://img.shields.io/badge/Claude-D97757?logo=claude&logoColor=fff)](#)  [![Google Gemini](https://img.shields.io/badge/Google%20Gemini-886FBF?logo=googlegemini&logoColor=fff)](#)  [![OpenAI](https://img.shields.io/badge/OpenAI-412991?logo=openai&logoColor=fff)](#)
+## [![Claude](https://img.shields.io/badge/Claude-D97757?logo=claude&logoColor=fff)](https://claude.com/product/claude-code)  [![Google Gemini](https://img.shields.io/badge/Google%20Gemini-886FBF?logo=googlegemini&logoColor=fff)](https://geminicli.com/)  [![OpenAI](https://img.shields.io/badge/OpenAI-412991?logo=openai&logoColor=fff)](https://developers.openai.com/codex/cli)
 
 **Goal**: Use the best AI for the job. Analyze massive codebases with Gemini, get precision edits with Codex, or use Claude's reasoning—all from a single MCP interface.
 
@@ -30,7 +27,7 @@ Ensure you have the following CLI tools installed and configured:
 1. **[Node.js](https://nodejs.org/)** (v16.0.0 or higher)
 2. **[Google Gemini CLI](https://github.com/google-gemini/gemini-cli)**
 3. **[Codex CLI](https://github.com/openai/codex)** (optional)
-4. **[Claude Code](https://github.com/anthropics/claude-code)** (optional)
+4. **[Claude Code](https://claude.com/product/claude-code)** (optional)
 
 ## Installation
 
@@ -70,11 +67,11 @@ Add this configuration to your Claude Desktop config file:
 
 - **Multi-Provider**: `ask ai --provider codex --model gpt-5.3-codex to refactor @src/auth.ts`
 - **Mistake Mitigation**: `mitigate mistakes --skill requirements-grounding for @new-feature.md`
-- **Gemini Specific**: `ask gemini to analyze @. and explain the architecture`
+- **Gemini Specific**: `ask ai --provider gemini to analyze @. and explain the architecture`
 
 ## Tools (for the AI)
 
-### `ask-ai` (or `ask-gemini`)
+### `ask-ai`
 
 Universal tool for AI analysis across providers.
 

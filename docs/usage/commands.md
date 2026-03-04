@@ -6,7 +6,7 @@ Complete list of available commands and their usage.
 
 The default prefix is `/ccg-tool` (configurable in your client).
 
-### `/ccg-tool:ask-ai` (or `/ccg-tool:ask-gemini`)
+### `/ccg-tool:ask-ai`
 Analyze files or ask questions about code using various AI providers.
 
 ```
@@ -43,11 +43,11 @@ Generate novel ideas with dynamic context gathering.
 /ccg-tool:brainstorm prompt:Marketing strategy domain:marketing provider:claude
 ```
 
-### `/ccg-tool:sandbox`
-Execute code in a safe environment (Gemini only).
+### Sandbox Mode (via `ask-ai`)
+Execute code in a safe environment (Gemini only) using the `sandbox` parameter.
 
 ```
-/ccg-tool:sandbox prompt:create a Python fibonacci generator
+/ccg-tool:ask-ai prompt:"create a Python fibonacci generator" sandbox:true
 ```
 
 ### `/ccg-tool:help`

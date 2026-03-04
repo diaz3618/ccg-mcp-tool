@@ -17,7 +17,7 @@ Say:
 - "Have **claude** analyze the main application file"
 
 ### Code Generation
-Instead of: `/ccg-tool:sandbox prompt:"create a web server"`
+Instead of: `/ccg-tool:ask-ai prompt:"create a web server" sandbox:true`
 
 Say:
 - "Get **gemini** to create a simple web server in sandbox"

@@ -169,7 +169,7 @@ Type `/ccg-tool` and these commands will appear:
 - `/ccg-tool:ask-ai` - Universal tool for AI analysis
 - `/ccg-tool:mitigate-mistakes` - Apply research-grounded gates
 - `/ccg-tool:brainstorm` - Multi-methodology ideation
-- `/ccg-tool:sandbox` - Safe code execution (Gemini)
+- `/ccg-tool:ask-ai` (with `sandbox:true`) - Safe code execution (Gemini)
 - `/ccg-tool:help` - Show help information
 - `/ccg-tool:ping` - Test connectivity
 
