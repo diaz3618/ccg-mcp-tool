@@ -1,10 +1,10 @@
-import { spawn } from "child_process";
+import { spawn } from "child_process"; // nosemgrep: detect-child-process -- intentional: this tool wraps AI CLIs (gemini/codex/claude)
 import { Logger } from "./logger.js";
 
 export async function executeCommand(
   command: string,
   args: string[],
-  onProgress?: (newOutput: string) => void
+  onProgress?: (newOutput: string) => void,
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     const startTime = Date.now();
@@ -20,10 +20,10 @@ export async function executeCommand(
     let stderr = "";
     let isResolved = false;
     let lastReportedLength = 0;
-    
+
     childProcess.stdout.on("data", (data) => {
       stdout += data.toString();
-      
+
       // Report new content if callback provided
       if (onProgress && stdout.length > lastReportedLength) {
         const newContent = stdout.substring(lastReportedLength);
@@ -31,7 +31,6 @@ export async function executeCommand(
         onProgress(newContent);
       }
     });
-
 
     // CLI level errors
     childProcess.stderr.on("data", (data) => {
@@ -52,8 +51,8 @@ export async function executeCommand(
               model: model,
               reason: reason,
               statusText: "Too Many Requests -- > try using gemini-2.5-flash by asking",
-            }
-          }
+            },
+          },
         };
         Logger.error(`Gemini Quota Error: ${JSON.stringify(errorJson, null, 2)}`);
       }
@@ -75,9 +74,7 @@ export async function executeCommand(
           Logger.commandComplete(startTime, code);
           Logger.error(`Failed with exit code ${code}`);
           const errorMessage = stderr.trim() || "Unknown error";
-          reject(
-            new Error(`Command failed with exit code ${code}: ${errorMessage}`),
-          );
+          reject(new Error(`Command failed with exit code ${code}: ${errorMessage}`));
         }
       }
     });

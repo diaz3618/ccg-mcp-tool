@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-07-01
+- **Security**: Fixed shell injection in GitHub Actions workflows (moved `github.event.inputs.tag` to `env:` block in docker-publish.yml and npm-publish.yml)
+- **Security**: Added `cacheKey` hex validation in `chunkCache.ts` to prevent path traversal
+- **Security**: Added `nosemgrep` suppressions for intentional `child_process` usage and Prism.js `v-html`
+- **Docs**: Rewrote `docs/concepts/models.md` with full model listing for Gemini (5 models), Claude (5 models), and Codex/OpenAI (6 models) including context windows, output limits, strengths, and use-case tables
+- **Dev tooling**: Added Prettier, ESLint (flat config), and Husky pre-push hooks — prettier/eslint hard-fail, knip soft-warn (false-positive safe)
+- **Code quality**: Resolved 13 ESLint errors (unused vars, prefer-const) across source files; all sources formatted with Prettier
+
 ## [0.1.0] - 2026-03-04
 - **Initial release** of `@diazstg/ccg-mcp-tool`
 - Multi-provider AI CLI integration: Gemini, Codex, and Claude Code

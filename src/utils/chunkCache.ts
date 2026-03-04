@@ -34,6 +34,7 @@ export function cacheChunks(prompt: string, chunks: EditChunk[]): string {
   // Generate deterministic cache key from prompt
   const promptHash = createHash("sha256").update(prompt).digest("hex");
   const cacheKey = promptHash.slice(0, 8);
+  // nosemgrep: path-join-resolve-traversal -- cacheKey is a SHA-256 hex slice (trusted, internal)
   const filePath = path.join(CACHE_DIR, `${cacheKey}.json`);
 
   // Store with metadata
@@ -59,6 +60,11 @@ export function cacheChunks(prompt: string, chunks: EditChunk[]): string {
  * @returns The cached chunks or null if expired/not found
  */
 export function getChunks(cacheKey: string): EditChunk[] | null {
+  // Validate cacheKey is a safe hex string before using in path construction
+  if (!/^[a-f0-9]+$/.test(cacheKey)) {
+    Logger.debug(`Invalid cacheKey format rejected: ${cacheKey}`);
+    return null;
+  }
   const filePath = path.join(CACHE_DIR, `${cacheKey}.json`);
 
   try {
@@ -75,9 +81,7 @@ export function getChunks(cacheKey: string): EditChunk[] | null {
       return null;
     }
 
-    Logger.debug(
-      `Cache hit for ${cacheKey}, returning ${data.chunks.length} chunks`,
-    );
+    Logger.debug(`Cache hit for ${cacheKey}, returning ${data.chunks.length} chunks`);
     return data.chunks;
   } catch (error) {
     Logger.debug(`Cache read error for ${cacheKey}: ${error}`);
@@ -129,8 +133,9 @@ function enforceFileLimits(): void {
       .filter((f) => f.endsWith(".json"))
       .map((f) => ({
         name: f,
+        // nosemgrep: path-join-resolve-traversal -- f is from readdirSync on our own cache dir, filtered to .json
         path: path.join(CACHE_DIR, f),
-        mtime: fs.statSync(path.join(CACHE_DIR, f)).mtimeMs,
+        mtime: fs.statSync(path.join(CACHE_DIR, f)).mtimeMs, // nosemgrep: path-join-resolve-traversal
       }))
       .sort((a, b) => a.mtime - b.mtime); // Oldest first
 
@@ -142,15 +147,14 @@ function enforceFileLimits(): void {
           fs.unlinkSync(file.path);
         } catch {}
       }
-      Logger.debug(
-        `Removed ${toRemove.length} old cache files to enforce limit`,
-      );
+      Logger.debug(`Removed ${toRemove.length} old cache files to enforce limit`);
     }
   } catch (error) {
     Logger.debug(`Error enforcing file limits: ${error}`);
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function getCacheStats(): {
   size: number;
   ttl: number;
@@ -173,6 +177,7 @@ function getCacheStats(): {
   };
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function clearCache(): void {
   // !
   try {

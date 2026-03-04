@@ -30,9 +30,11 @@ jobs:
 
       - name: Extract version from tag
         id: version
+        env:
+          TAG_INPUT: ${{ github.event.inputs.tag }}
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            VERSION=${{ github.event.inputs.tag }}
+            VERSION="${TAG_INPUT}"
             VERSION=${VERSION#v}
           else
             VERSION=${GITHUB_REF#refs/tags/v}

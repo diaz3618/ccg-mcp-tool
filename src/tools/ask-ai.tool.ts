@@ -40,10 +40,7 @@ const askAiArgsSchema = z.object({
     .union([z.number(), z.string()])
     .optional()
     .describe("Which chunk to return (1-based)"),
-  chunkCacheKey: z
-    .string()
-    .optional()
-    .describe("Optional cache key for continuation"),
+  chunkCacheKey: z.string().optional().describe("Optional cache key for continuation"),
 });
 
 export const askAiTool: UnifiedTool = {
@@ -57,8 +54,7 @@ export const askAiTool: UnifiedTool = {
   },
   category: "utility",
   execute: async (args, onProgress) => {
-    const { prompt, provider, sandbox, changeMode, chunkIndex, chunkCacheKey } =
-      args;
+    const { prompt, provider, sandbox, changeMode, chunkIndex, chunkCacheKey } = args;
     const model = args.model || ServerConfig.defaultModel;
     if (!prompt?.trim()) {
       throw new Error(ERROR_MESSAGES.NO_PROMPT_PROVIDED);
@@ -92,9 +88,7 @@ export const askAiTool: UnifiedTool = {
     }
 
     const responsePrefix =
-      provider === PROVIDERS.GEMINI
-        ? STATUS_MESSAGES.GEMINI_RESPONSE
-        : `${provider} response:`;
+      provider === PROVIDERS.GEMINI ? STATUS_MESSAGES.GEMINI_RESPONSE : `${provider} response:`;
     return `${responsePrefix}\n${result}`;
   },
 };

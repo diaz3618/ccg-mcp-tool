@@ -10,14 +10,11 @@ export interface EditChunk {
 
 function estimateEditSize(edit: ChangeModeEdit): number {
   const jsonOverhead = 250;
-  const contentSize =
-    edit.filename.length * 2 + edit.oldCode.length + edit.newCode.length;
+  const contentSize = edit.filename.length * 2 + edit.oldCode.length + edit.newCode.length;
   return jsonOverhead + contentSize;
 }
 
-function groupEditsByFile(
-  edits: ChangeModeEdit[],
-): Map<string, ChangeModeEdit[]> {
+function groupEditsByFile(edits: ChangeModeEdit[]): Map<string, ChangeModeEdit[]> {
   const groups = new Map<string, ChangeModeEdit[]>();
   for (const edit of edits) {
     const fileEdits = groups.get(edit.filename) || [];
@@ -47,29 +44,19 @@ export function chunkChangeModeEdits(
   let currentChunk: ChangeModeEdit[] = [];
   let currentSize = 0;
 
-  for (const [filename, fileEdits] of fileGroups) {
-    const fileSize = fileEdits.reduce(
-      (sum, edit) => sum + estimateEditSize(edit),
-      0,
-    );
+  for (const [_filename, fileEdits] of fileGroups) {
+    const fileSize = fileEdits.reduce((sum, edit) => sum + estimateEditSize(edit), 0);
     if (fileSize > maxCharsPerChunk) {
       if (currentChunk.length > 0) {
-        chunks.push(
-          createChunk(currentChunk, chunks.length + 1, 0, currentSize),
-        );
+        chunks.push(createChunk(currentChunk, chunks.length + 1, 0, currentSize));
         currentChunk = [];
         currentSize = 0;
       }
       for (const edit of fileEdits) {
         const editSize = estimateEditSize(edit);
 
-        if (
-          currentSize + editSize > maxCharsPerChunk &&
-          currentChunk.length > 0
-        ) {
-          chunks.push(
-            createChunk(currentChunk, chunks.length + 1, 0, currentSize),
-          );
+        if (currentSize + editSize > maxCharsPerChunk && currentChunk.length > 0) {
+          chunks.push(createChunk(currentChunk, chunks.length + 1, 0, currentSize));
           currentChunk = [];
           currentSize = 0;
         }
@@ -78,13 +65,8 @@ export function chunkChangeModeEdits(
         currentSize += editSize;
       }
     } else {
-      if (
-        currentSize + fileSize > maxCharsPerChunk &&
-        currentChunk.length > 0
-      ) {
-        chunks.push(
-          createChunk(currentChunk, chunks.length + 1, 0, currentSize),
-        );
+      if (currentSize + fileSize > maxCharsPerChunk && currentChunk.length > 0) {
+        chunks.push(createChunk(currentChunk, chunks.length + 1, 0, currentSize));
         currentChunk = [];
         currentSize = 0;
       }
@@ -119,12 +101,10 @@ function createChunk(
     estimatedChars,
   };
 }
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function summarizeChunking(chunks: EditChunk[]): string {
   const totalEdits = chunks.reduce((sum, chunk) => sum + chunk.edits.length, 0);
-  const totalChars = chunks.reduce(
-    (sum, chunk) => sum + chunk.estimatedChars,
-    0,
-  );
+  const totalChars = chunks.reduce((sum, chunk) => sum + chunk.estimatedChars, 0);
 
   return `Chunking Summary:
 # edits: ${totalEdits}

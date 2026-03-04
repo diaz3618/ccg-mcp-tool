@@ -1,0 +1,42 @@
+#!/bin/sh
+# Pre-push hook: runs format check, lint, and knip before every push.
+# Prettier + ESLint = hard fail (blocks push on any error).
+# Knip = soft warn (reports issues but never blocks push — false positives are common).
+
+set -e
+
+echo ""
+echo "🔍 Running pre-push checks..."
+echo ""
+
+# ── 1. TypeScript build check ──────────────────────────────────────────────────
+echo "▶ TypeScript: type-checking..."
+npx tsc --noEmit
+echo "  ✅ TypeScript OK"
+echo ""
+
+# ── 2. Prettier format check ──────────────────────────────────────────────────
+echo "▶ Prettier: checking formatting..."
+npx prettier --check "src/**/*.ts" "*.json"
+echo "  ✅ Prettier OK"
+echo ""
+
+# ── 3. ESLint ─────────────────────────────────────────────────────────────────
+echo "▶ ESLint: linting source..."
+npx eslint "src/**/*.ts"
+echo "  ✅ ESLint OK"
+echo ""
+
+# ── 4. Knip: unused exports / deps (soft warn — never blocks push) ─────────────
+echo "▶ Knip: checking for unused code and dependencies..."
+if npx knip 2>&1; then
+  echo "  ✅ Knip OK"
+else
+  echo ""
+  echo "  ⚠️  Knip reported issues above (soft warning — push proceeding)."
+  echo "     Review the output and clean up if these are not false positives."
+fi
+echo ""
+
+echo "✅ Pre-push checks passed. Pushing..."
+echo ""

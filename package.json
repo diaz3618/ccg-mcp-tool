@@ -1,6 +1,6 @@
 {
   "name": "@diazstg/ccg-mcp-tool",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "MCP server for Claude Code, Codex, and Gemini integration",
   "type": "module",
   "main": "dist/index.js",
@@ -13,12 +13,18 @@
     "dev": "tsc && node dist/index.js",
     "test": "echo \"No tests yet\" && exit 0",
     "lint": "tsc --noEmit",
+    "lint:eslint": "eslint \"src/**/*.ts\"",
+    "format": "prettier --write \"src/**/*.ts\" \"*.json\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"*.json\"",
+    "lint:knip": "knip || true",
+    "lint:all": "npm run lint && npm run format:check && npm run lint:eslint && npm run lint:knip",
     "contribute": "tsx src/contribute.ts",
     "prepublishOnly": "echo '⚠️  Remember to test locally first!' && npm run build",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
-    "knip": "knip"
+    "knip": "knip",
+    "prepare": "husky"
   },
   "keywords": [
     "mcp",
@@ -53,7 +59,12 @@
   },
   "devDependencies": {
     "@types/node": "^20.19.35",
+    "@typescript-eslint/eslint-plugin": "^8.56.1",
+    "@typescript-eslint/parser": "^8.56.1",
+    "eslint": "^10.0.2",
+    "husky": "^9.1.7",
     "knip": "^5.85.0",
+    "prettier": "^3.8.1",
     "tsx": "^4.0.0",
     "typescript": "^5.9.3",
     "vitepress": "^1.6.3"

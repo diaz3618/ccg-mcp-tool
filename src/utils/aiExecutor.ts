@@ -1,18 +1,12 @@
-import { executeCommand } from './commandExecutor.js';
-import { Logger } from './logger.js';
-import { 
-  ERROR_MESSAGES, 
-  STATUS_MESSAGES, 
-  MODELS, 
-  CLI,
-  PROVIDERS
-} from '../constants.js';
-import { ServerConfig } from '../config.js';
+import { executeCommand } from "./commandExecutor.js";
+import { Logger } from "./logger.js";
+import { ERROR_MESSAGES, STATUS_MESSAGES, MODELS, CLI, PROVIDERS } from "../constants.js";
+import { ServerConfig } from "../config.js";
 
-import { parseChangeModeOutput, validateChangeModeEdits } from './changeModeParser.js';
-import { formatChangeModeResponse, summarizeChangeModeEdits } from './changeModeTranslator.js';
-import { chunkChangeModeEdits } from './changeModeChunker.js';
-import { cacheChunks, getChunks } from './chunkCache.js';
+import { parseChangeModeOutput, validateChangeModeEdits } from "./changeModeParser.js";
+import { formatChangeModeResponse, summarizeChangeModeEdits } from "./changeModeTranslator.js";
+import { chunkChangeModeEdits } from "./changeModeChunker.js";
+import { cacheChunks, getChunks } from "./chunkCache.js";
 
 export async function executeAICLI(
   prompt: string,
@@ -20,13 +14,13 @@ export async function executeAICLI(
   model?: string,
   sandbox?: boolean,
   changeMode?: boolean,
-  onProgress?: (newOutput: string) => void
+  onProgress?: (newOutput: string) => void,
 ): Promise<string> {
   let prompt_processed = prompt;
-  
+
   if (provider === PROVIDERS.GEMINI && changeMode) {
-    prompt_processed = prompt.replace(/file:(\S+)/g, '@$1');
-    
+    prompt_processed = prompt.replace(/file:(\S+)/g, "@$1");
+
     const changeModeInstructions = `
 [CHANGEMODE INSTRUCTIONS]
 You are generating code modifications that will be processed by an automated system. The output format is critical because it enables programmatic application of changes without human intervention.
@@ -89,13 +83,15 @@ ${prompt_processed}
 `;
     prompt_processed = changeModeInstructions;
   }
-  
+
   const args = [];
   let command: string = CLI.COMMANDS.GEMINI;
 
   if (provider === PROVIDERS.CODEX) {
     command = CLI.COMMANDS.CODEX;
-    if (model) { args.push(CLI.FLAGS.MODEL, model); }
+    if (model) {
+      args.push(CLI.FLAGS.MODEL, model);
+    }
     args.push(prompt_processed);
   } else if (provider === PROVIDERS.CLAUDE) {
     command = CLI.COMMANDS.CLAUDE;
@@ -104,22 +100,31 @@ ${prompt_processed}
     args.push(prompt_processed);
   } else {
     // Default to Gemini
-    if (model) { args.push(CLI.FLAGS.MODEL, model); }
-    if (sandbox) { args.push(CLI.FLAGS.SANDBOX); }
-    
+    if (model) {
+      args.push(CLI.FLAGS.MODEL, model);
+    }
+    if (sandbox) {
+      args.push(CLI.FLAGS.SANDBOX);
+    }
+
     // Ensure @ symbols work cross-platform by wrapping in quotes if needed
-    const finalPrompt = prompt_processed.includes('@') && !prompt_processed.startsWith('"') 
-      ? `"${prompt_processed}"` 
-      : prompt_processed;
-      
+    const finalPrompt =
+      prompt_processed.includes("@") && !prompt_processed.startsWith('"')
+        ? `"${prompt_processed}"`
+        : prompt_processed;
+
     args.push(CLI.FLAGS.PROMPT, finalPrompt);
   }
-  
+
   try {
     return await executeCommand(command, args, onProgress);
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    if (provider === PROVIDERS.GEMINI && errorMessage.includes(ERROR_MESSAGES.QUOTA_EXCEEDED) && model !== MODELS.FLASH) {
+    if (
+      provider === PROVIDERS.GEMINI &&
+      errorMessage.includes(ERROR_MESSAGES.QUOTA_EXCEEDED) &&
+      model !== MODELS.FLASH
+    ) {
       Logger.warn(`${ERROR_MESSAGES.QUOTA_EXCEEDED}. Falling back to ${MODELS.FLASH}.`);
       await sendStatusMessage(STATUS_MESSAGES.FLASH_RETRY);
       const fallbackArgs = [];
@@ -127,12 +132,13 @@ ${prompt_processed}
       if (sandbox) {
         fallbackArgs.push(CLI.FLAGS.SANDBOX);
       }
-      
+
       // Same @ symbol handling for fallback
-      const fallbackPrompt = prompt_processed.includes('@') && !prompt_processed.startsWith('"') 
-        ? `"${prompt_processed}"` 
-        : prompt_processed;
-        
+      const fallbackPrompt =
+        prompt_processed.includes("@") && !prompt_processed.startsWith('"')
+          ? `"${prompt_processed}"`
+          : prompt_processed;
+
       fallbackArgs.push(CLI.FLAGS.PROMPT, fallbackPrompt);
       try {
         const result = await executeCommand(CLI.COMMANDS.GEMINI, fallbackArgs, onProgress);
@@ -140,8 +146,11 @@ ${prompt_processed}
         await sendStatusMessage(STATUS_MESSAGES.FLASH_SUCCESS);
         return result;
       } catch (fallbackError) {
-        const fallbackErrorMessage = fallbackError instanceof Error ? fallbackError.message : String(fallbackError);
-        throw new Error(`${MODELS.PRO} quota exceeded, ${MODELS.FLASH} fallback also failed: ${fallbackErrorMessage}`);
+        const fallbackErrorMessage =
+          fallbackError instanceof Error ? fallbackError.message : String(fallbackError);
+        throw new Error(
+          `${MODELS.PRO} quota exceeded, ${MODELS.FLASH} fallback also failed: ${fallbackErrorMessage}`,
+        );
       }
     } else {
       throw error;
@@ -153,7 +162,7 @@ export async function processChangeModeOutput(
   rawResult: string,
   chunkIndex?: number,
   chunkCacheKey?: string,
-  prompt?: string
+  prompt?: string,
 ): Promise<string> {
   // Check for cached chunks first
   if (chunkIndex && chunkCacheKey) {
@@ -161,25 +170,26 @@ export async function processChangeModeOutput(
     if (cachedChunks && chunkIndex > 0 && chunkIndex <= cachedChunks.length) {
       Logger.debug(`Using cached chunk ${chunkIndex} of ${cachedChunks.length}`);
       const chunk = cachedChunks[chunkIndex - 1];
-      let result = formatChangeModeResponse(
-        chunk.edits,
-        { current: chunkIndex, total: cachedChunks.length, cacheKey: chunkCacheKey }
-      );
-      
+      let result = formatChangeModeResponse(chunk.edits, {
+        current: chunkIndex,
+        total: cachedChunks.length,
+        cacheKey: chunkCacheKey,
+      });
+
       // Add summary for first chunk only
       if (chunkIndex === 1 && chunk.edits.length > 5) {
-        const allEdits = cachedChunks.flatMap(c => c.edits);
-        result = summarizeChangeModeEdits(allEdits) + '\n\n' + result;
+        const allEdits = cachedChunks.flatMap((c) => c.edits);
+        result = summarizeChangeModeEdits(allEdits) + "\n\n" + result;
       }
-      
+
       return result;
     }
     Logger.debug(`Cache miss or invalid chunk index, processing new result`);
   }
-  
+
   // Parse OLD/NEW format
   const edits = parseChangeModeOutput(rawResult);
-  
+
   if (edits.length === 0) {
     return `No edits found in Gemini's response. Please ensure Gemini uses the OLD/NEW format. \n\n+ ${rawResult}`;
   }
@@ -187,34 +197,37 @@ export async function processChangeModeOutput(
   // Validate edits
   const validation = validateChangeModeEdits(edits);
   if (!validation.valid) {
-    return `Edit validation failed:\n${validation.errors.join('\n')}`;
+    return `Edit validation failed:\n${validation.errors.join("\n")}`;
   }
-  
+
   const chunks = chunkChangeModeEdits(edits);
-  
+
   // Cache if multiple chunks and we have the original prompt
   let cacheKey: string | undefined;
   if (chunks.length > 1 && prompt) {
     cacheKey = cacheChunks(prompt, chunks);
     Logger.debug(`Cached ${chunks.length} chunks with key: ${cacheKey}`);
   }
-  
+
   // Return requested chunk or first chunk
-  const returnChunkIndex = (chunkIndex && chunkIndex > 0 && chunkIndex <= chunks.length) ? chunkIndex : 1;
+  const returnChunkIndex =
+    chunkIndex && chunkIndex > 0 && chunkIndex <= chunks.length ? chunkIndex : 1;
   const returnChunk = chunks[returnChunkIndex - 1];
-  
+
   // Format the response
   let result = formatChangeModeResponse(
     returnChunk.edits,
-    chunks.length > 1 ? { current: returnChunkIndex, total: chunks.length, cacheKey } : undefined
+    chunks.length > 1 ? { current: returnChunkIndex, total: chunks.length, cacheKey } : undefined,
   );
-  
+
   // Add summary if helpful (only for first chunk)
   if (returnChunkIndex === 1 && edits.length > 5) {
-    result = summarizeChangeModeEdits(edits, chunks.length > 1) + '\n\n' + result;
+    result = summarizeChangeModeEdits(edits, chunks.length > 1) + "\n\n" + result;
   }
-  
-  Logger.debug(`ChangeMode: Parsed ${edits.length} edits, ${chunks.length} chunks, returning chunk ${returnChunkIndex}`);
+
+  Logger.debug(
+    `ChangeMode: Parsed ${edits.length} edits, ${chunks.length} chunks, returning chunk ${returnChunkIndex}`,
+  );
   return result;
 }
 

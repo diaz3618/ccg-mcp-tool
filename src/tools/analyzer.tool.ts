@@ -353,9 +353,7 @@ const analyzerArgsSchema = z.object({
   prompt: z
     .string()
     .min(1)
-    .describe(
-      "The code snippet or task you want to check for potential AI coding agent mistakes.",
-    ),
+    .describe("The code snippet or task you want to check for potential AI coding agent mistakes."),
   skill: z
     .enum(Object.keys(SKILL_CONTENT) as [string, ...string[]])
     .describe(
@@ -429,10 +427,7 @@ Assessment:`;
 };
 
 const coordinatorArgsSchema = z.object({
-  prompt: z
-    .string()
-    .min(1)
-    .describe("The code, diff, or task description to review."),
+  prompt: z.string().min(1).describe("The code, diff, or task description to review."),
   task_type: z
     .enum(["feature", "bugfix", "refactor", "dependency-update"])
     .describe(
@@ -485,11 +480,8 @@ export const coordinatorTool: UnifiedTool = {
 
     const gateSections = selectedSkills
       .map((skill, idx) => {
-        const content =
-          SKILL_CONTENT[skill] || `[content not found for ${skill}]`;
-        const label = skill
-          .replace(/-/g, " ")
-          .replace(/\b\w/g, (c: string) => c.toUpperCase());
+        const content = SKILL_CONTENT[skill] || `[content not found for ${skill}]`;
+        const label = skill.replace(/-/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase());
         return `### Gate ${idx + 1}: ${label}\n\n${content}`;
       })
       .join("\n\n---\n\n");
