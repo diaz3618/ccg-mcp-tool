@@ -89,14 +89,17 @@ ${prompt_processed}
 
   if (provider === PROVIDERS.CODEX) {
     command = CLI.COMMANDS.CODEX;
+    args.push("exec"); // Non-interactive subcommand
     if (model) {
       args.push(CLI.FLAGS.MODEL, model);
     }
     args.push(prompt_processed);
   } else if (provider === PROVIDERS.CLAUDE) {
     command = CLI.COMMANDS.CLAUDE;
-    // Assuming Claude Code handles the prompt as a trailing argument
-    // or standard input. For now, we'll try it as a trailing argument.
+    args.push("-p"); // Print mode (non-interactive)
+    if (model) {
+      args.push("--model", model);
+    }
     args.push(prompt_processed);
   } else {
     // Default to Gemini
@@ -191,7 +194,7 @@ export async function processChangeModeOutput(
   const edits = parseChangeModeOutput(rawResult);
 
   if (edits.length === 0) {
-    return `No edits found in Gemini's response. Please ensure Gemini uses the OLD/NEW format. \n\n+ ${rawResult}`;
+    return `No edits found in the AI response. Please ensure the AI uses the OLD/NEW format. \n\n+ ${rawResult}`;
   }
 
   // Validate edits

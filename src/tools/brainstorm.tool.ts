@@ -192,7 +192,12 @@ export const brainstormTool: UnifiedTool = {
       ideaCount = 12,
       includeAnalysis = true,
     } = args;
-    const model = args.model || ServerConfig.defaultModel;
+    // Only use default model when provider matches default (avoid passing codex model to claude, etc.)
+    const model =
+      args.model ||
+      ((args.provider || ServerConfig.defaultProvider) === ServerConfig.defaultProvider
+        ? ServerConfig.defaultModel
+        : undefined);
 
     if (!prompt?.trim()) {
       throw new Error("You must provide a valid brainstorming challenge or question to explore");

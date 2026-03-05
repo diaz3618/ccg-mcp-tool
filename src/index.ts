@@ -16,8 +16,13 @@ import {
   GetPromptResult,
   CallToolResult,
 } from "@modelcontextprotocol/sdk/types.js";
+import { createRequire } from "node:module";
 import { Logger } from "./utils/logger.js";
 import { PROTOCOL, ToolArguments } from "./constants.js";
+import { ServerConfig } from "./config.js";
+
+const require = createRequire(import.meta.url);
+const packageJson = require("../package.json") as { version: string };
 
 import {
   getToolDefinitions,
@@ -30,7 +35,7 @@ import {
 const server = new Server(
   {
     name: "ccg-mcp-tool",
-    version: "1.2.0",
+    version: packageJson.version,
   },
   {
     capabilities: {
@@ -83,12 +88,13 @@ function startProgressUpdates(operationName: string, progressToken?: string | nu
   currentOperationName = operationName;
   latestOutput = ""; // Reset latest output
 
+  const providerLabel = ServerConfig.defaultProvider || "AI";
   const progressMessages = [
-    `🧠 ${operationName} - Gemini is analyzing your request...`,
+    `🧠 ${operationName} - ${providerLabel} is analyzing your request...`,
     `📊 ${operationName} - Processing files and generating insights...`,
     `✨ ${operationName} - Creating structured response for your review...`,
     `⏱️ ${operationName} - Large analysis in progress (this is normal for big requests)...`,
-    `🔍 ${operationName} - Still working... Gemini takes time for quality results...`,
+    `🔍 ${operationName} - Still working... ${providerLabel} takes time for quality results...`,
   ];
 
   let messageIndex = 0;

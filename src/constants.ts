@@ -1,5 +1,5 @@
 // Logging
-export const LOG_PREFIX = "[GMCPT]";
+export const LOG_PREFIX = "[CCG]";
 
 // Error messages
 export const ERROR_MESSAGES = {
@@ -16,7 +16,7 @@ export const STATUS_MESSAGES = {
   QUOTA_SWITCHING: "🚫 Gemini 2.5 Pro quota exceeded, switching to Flash model...",
   FLASH_RETRY: "⚡ Retrying with Gemini 2.5 Flash...",
   FLASH_SUCCESS: "✅ Flash model completed successfully",
-  SANDBOX_EXECUTING: "🔒 Executing Gemini CLI command in sandbox mode...",
+  SANDBOX_EXECUTING: "🔒 Executing CLI command in sandbox mode...",
   GEMINI_RESPONSE: "Gemini response:",
   // Timeout prevention messages
   PROCESSING_START: "🔍 Starting analysis (may take 5-15 minutes for large codebases)",

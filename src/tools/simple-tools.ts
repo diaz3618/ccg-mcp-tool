@@ -1,6 +1,8 @@
 import { z } from "zod";
 import { UnifiedTool } from "./registry.js";
 import { executeCommand } from "../utils/commandExecutor.js";
+import { ServerConfig } from "../config.js";
+import { CLI } from "../constants.js";
 
 const pingArgsSchema = z.object({
   prompt: z.string().default("").describe("Message to echo "),
@@ -14,9 +16,9 @@ export const pingTool: UnifiedTool = {
     description: "Echo test message with structured response.",
   },
   category: "simple",
-  execute: async (args, onProgress) => {
+  execute: async (args) => {
     const message = args.prompt || args.message || "Pong!";
-    return executeCommand("echo", [message as string], onProgress);
+    return String(message);
   },
 };
 
@@ -24,13 +26,16 @@ const helpArgsSchema = z.object({});
 
 export const helpTool: UnifiedTool = {
   name: "Help",
-  description: "receive help information",
+  description: "Display help information for the configured AI provider CLI",
   zodSchema: helpArgsSchema,
   prompt: {
-    description: "receive help information",
+    description: "Display help information for the configured AI provider CLI",
   },
   category: "simple",
-  execute: async (args, onProgress) => {
-    return executeCommand("gemini", ["-help"], onProgress);
+  execute: async (_args, onProgress) => {
+    const provider = ServerConfig.defaultProvider;
+    const command = (CLI.COMMANDS as Record<string, string>)[provider.toUpperCase()] || provider;
+    const helpFlag = provider === "codex" ? "--help" : "-help";
+    return executeCommand(command, [helpFlag], onProgress);
   },
 };

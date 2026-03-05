@@ -391,7 +391,10 @@ export const analyzerTool: UnifiedTool = {
       provider: string;
       model?: string;
     };
-    const model = (args as any).model || ServerConfig.defaultModel;
+    // Only use default model when provider matches default (avoid passing codex model to claude, etc.)
+    const model =
+      (args as any).model ||
+      (provider === ServerConfig.defaultProvider ? ServerConfig.defaultModel : undefined);
 
     const skillContent = SKILL_CONTENT[skill];
     if (!skillContent) {
@@ -465,7 +468,9 @@ export const coordinatorTool: UnifiedTool = {
       provider: string;
       model?: string;
     };
-    const model = (args as any).model || ServerConfig.defaultModel;
+    const model =
+      (args as any).model ||
+      (provider === ServerConfig.defaultProvider ? ServerConfig.defaultModel : undefined);
 
     const selectedSkills = ROUTING[task_type];
     if (!selectedSkills || selectedSkills.length === 0) {

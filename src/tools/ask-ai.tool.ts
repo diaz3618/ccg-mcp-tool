@@ -55,7 +55,10 @@ export const askAiTool: UnifiedTool = {
   category: "utility",
   execute: async (args, onProgress) => {
     const { prompt, provider, sandbox, changeMode, chunkIndex, chunkCacheKey } = args;
-    const model = args.model || ServerConfig.defaultModel;
+    // Only use default model when provider matches default (avoid passing codex model to claude, etc.)
+    const model =
+      args.model ||
+      (provider === ServerConfig.defaultProvider ? ServerConfig.defaultModel : undefined);
     if (!prompt?.trim()) {
       throw new Error(ERROR_MESSAGES.NO_PROMPT_PROVIDED);
     }

@@ -46,7 +46,7 @@ export async function executeCommand(
         const errorJson = {
           error: {
             code: parseInt(status),
-            message: `GMCPT: --> Quota exceeded for ${model}`,
+            message: `CCG: --> Quota exceeded for ${model}`,
             details: {
               model: model,
               reason: reason,
@@ -54,7 +54,7 @@ export async function executeCommand(
             },
           },
         };
-        Logger.error(`Gemini Quota Error: ${JSON.stringify(errorJson, null, 2)}`);
+        Logger.error(`Quota Error: ${JSON.stringify(errorJson, null, 2)}`);
       }
     });
     childProcess.on("error", (error) => {
