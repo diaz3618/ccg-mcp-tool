@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-03-06
+- **Security**: Upgraded `@modelcontextprotocol/sdk` from 0.5.0 to 1.27.1 (fixes GHSA-8r9q-7v3j-jr4g ReDoS, GHSA-w48q-cv73-mx4w DNS rebinding)
+- **Security**: Added path traversal guard with `path.resolve` validation in chunkCache.ts
+- **Security**: Added nosemgrep annotations for validated command execution and path operations
+- **Fix**: Removed deprecated `notifications` capability from Server config (breaking change in SDK 1.x)
+- **Docker**: Added multi-stage Dockerfile (node:20-slim, 73MB content size)
+- **Docker**: Added .dockerignore for optimized build context
+- **CI**: Cleaned up docker-publish.yml (GHCR only, removed DockerHub references)
+- **Scan**: Knip 0 issues, ESLint 0 errors, semgrep 0 unresolved findings
+
 ## [0.3.0] - 2026-03-05
 - **Fix**: Claude CLI model name changed from invalid `claude-3-5-sonnet` to alias `sonnet` (Claude CLI accepts aliases: `sonnet`, `opus`, `haiku`)
 - **Fix**: Help tool now uses `--help` for all providers (was incorrectly using `-help` for Gemini)

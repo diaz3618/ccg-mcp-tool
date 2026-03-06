@@ -65,7 +65,16 @@ export function getChunks(cacheKey: string): EditChunk[] | null {
     Logger.debug(`Invalid cacheKey format rejected: ${cacheKey}`);
     return null;
   }
+  // nosemgrep: path-join-resolve-traversal -- cacheKey validated as hex-only above
   const filePath = path.join(CACHE_DIR, `${cacheKey}.json`);
+
+  // Belt-and-suspenders: ensure resolved path stays within CACHE_DIR
+  // nosemgrep: path-join-resolve-traversal -- this IS the path traversal guard
+  const resolved = path.resolve(filePath);
+  if (!resolved.startsWith(path.resolve(CACHE_DIR))) {
+    Logger.debug(`Path traversal attempt blocked: ${cacheKey}`);
+    return null;
+  }
 
   try {
     if (!fs.existsSync(filePath)) {

@@ -10,6 +10,7 @@ export async function executeCommand(
     const startTime = Date.now();
     Logger.commandExecution(command, args, startTime);
 
+    // nosemgrep: detect-child-process -- command is from PROVIDERS constants, not user input; shell:false prevents injection
     const childProcess = spawn(command, args, {
       env: process.env,
       shell: false,

@@ -1,6 +1,6 @@
 {
   "name": "@diazstg/ccg-mcp-tool",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "MCP server for Claude Code, Codex, and Gemini integration",
   "type": "module",
   "main": "dist/index.js",
@@ -53,7 +53,7 @@
     "LICENSE"
   ],
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^0.5.0",
+    "@modelcontextprotocol/sdk": "^1.27.1",
     "zod": "^3.25.76",
     "zod-to-json-schema": "^3.24.6"
   },
