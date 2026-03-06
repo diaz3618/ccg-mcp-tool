@@ -70,9 +70,6 @@ Begin brainstorming session:`;
   return enhancedPrompt;
 }
 
-/**
- * Returns methodology-specific instructions for structured brainstorming
- */
 function getMethodologyInstructions(methodology: string, domain?: string): string {
   const methodologies: Record<string, string> = {
     divergent: `**Divergent Thinking Approach:**
@@ -192,7 +189,6 @@ export const brainstormTool: UnifiedTool = {
       ideaCount = 12,
       includeAnalysis = true,
     } = args;
-    // Only use default model when provider matches default (avoid passing codex model to claude, etc.)
     const model =
       args.model ||
       ((args.provider || ServerConfig.defaultProvider) === ServerConfig.defaultProvider

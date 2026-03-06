@@ -101,22 +101,3 @@ function createChunk(
     estimatedChars,
   };
 }
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function summarizeChunking(chunks: EditChunk[]): string {
-  const totalEdits = chunks.reduce((sum, chunk) => sum + chunk.edits.length, 0);
-  const totalChars = chunks.reduce((sum, chunk) => sum + chunk.estimatedChars, 0);
-
-  return `Chunking Summary:
-# edits: ${totalEdits}
-# chunks: ${chunks.length}
-est chars: ${totalChars.toLocaleString()}
-mean size: ${Math.round(totalChars / chunks.length).toLocaleString()} chars
-
-Chunks:
-${chunks
-  .map(
-    (chunk) =>
-      `  Chunk ${chunk.chunkIndex}: ${chunk.edits.length} edits, ~${chunk.estimatedChars.toLocaleString()} chars`,
-  )
-  .join("\n")}`;
-}

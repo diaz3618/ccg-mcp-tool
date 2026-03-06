@@ -55,7 +55,6 @@ export const askAiTool: UnifiedTool = {
   category: "utility",
   execute: async (args, onProgress) => {
     const { prompt, provider, sandbox, changeMode, chunkIndex, chunkCacheKey } = args;
-    // Only use default model when provider matches default (avoid passing codex model to claude, etc.)
     const model =
       args.model ||
       (provider === ServerConfig.defaultProvider ? ServerConfig.defaultModel : undefined);
@@ -65,7 +64,7 @@ export const askAiTool: UnifiedTool = {
 
     if (changeMode && chunkIndex && chunkCacheKey) {
       return processChangeModeOutput(
-        "", // empty for cache...
+        "",
         chunkIndex as number,
         chunkCacheKey as string,
         prompt as string,

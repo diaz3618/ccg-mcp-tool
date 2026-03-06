@@ -29,15 +29,13 @@ function ensureCacheDir(): void {
  */
 export function cacheChunks(prompt: string, chunks: EditChunk[]): string {
   ensureCacheDir();
-  cleanExpiredFiles(); // Cleanup on each write
+  cleanExpiredFiles();
 
-  // Generate deterministic cache key from prompt
   const promptHash = createHash("sha256").update(prompt).digest("hex");
   const cacheKey = promptHash.slice(0, 8);
   // nosemgrep: path-join-resolve-traversal -- cacheKey is a SHA-256 hex slice (trusted, internal)
   const filePath = path.join(CACHE_DIR, `${cacheKey}.json`);
 
-  // Store with metadata
   const cacheData: CacheEntry = {
     chunks,
     timestamp: Date.now(),
@@ -60,7 +58,6 @@ export function cacheChunks(prompt: string, chunks: EditChunk[]): string {
  * @returns The cached chunks or null if expired/not found
  */
 export function getChunks(cacheKey: string): EditChunk[] | null {
-  // Validate cacheKey is a safe hex string before using in path construction
   if (!/^[a-f0-9]+$/.test(cacheKey)) {
     Logger.debug(`Invalid cacheKey format rejected: ${cacheKey}`);
     return null;
@@ -95,7 +92,7 @@ export function getChunks(cacheKey: string): EditChunk[] | null {
   } catch (error) {
     Logger.debug(`Cache read error for ${cacheKey}: ${error}`);
     try {
-      fs.unlinkSync(filePath); // Clean up bad file
+      fs.unlinkSync(filePath);
     } catch {}
     return null;
   }
@@ -119,7 +116,6 @@ function cleanExpiredFiles(): void {
           cleaned++;
         }
       } catch (error) {
-        // Individual file error - continue with others
         Logger.debug(`Error checking file ${file}: ${error}`);
       }
     }
@@ -133,8 +129,6 @@ function cleanExpiredFiles(): void {
   }
 }
 
-// maximum file count limit (FIFO) --> LRU?
-
 function enforceFileLimits(): void {
   try {
     const files = fs
@@ -146,9 +140,8 @@ function enforceFileLimits(): void {
         path: path.join(CACHE_DIR, f),
         mtime: fs.statSync(path.join(CACHE_DIR, f)).mtimeMs, // nosemgrep: path-join-resolve-traversal
       }))
-      .sort((a, b) => a.mtime - b.mtime); // Oldest first
+      .sort((a, b) => a.mtime - b.mtime);
 
-    // Remove oldest files if over limit
     if (files.length > MAX_CACHE_FILES) {
       const toRemove = files.slice(0, files.length - MAX_CACHE_FILES);
       for (const file of toRemove) {
@@ -160,47 +153,5 @@ function enforceFileLimits(): void {
     }
   } catch (error) {
     Logger.debug(`Error enforcing file limits: ${error}`);
-  }
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function getCacheStats(): {
-  size: number;
-  ttl: number;
-  maxSize: number;
-  cacheDir: string;
-} {
-  ensureCacheDir();
-  let size = 0;
-
-  try {
-    const files = fs.readdirSync(CACHE_DIR);
-    size = files.filter((f) => f.endsWith(".json")).length;
-  } catch {}
-
-  return {
-    size,
-    ttl: CACHE_TTL,
-    maxSize: MAX_CACHE_FILES,
-    cacheDir: CACHE_DIR,
-  };
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function clearCache(): void {
-  // !
-  try {
-    ensureCacheDir();
-    const files = fs.readdirSync(CACHE_DIR);
-
-    for (const file of files) {
-      if (file.endsWith(".json")) {
-        fs.unlinkSync(path.join(CACHE_DIR, file));
-      }
-    }
-
-    Logger.debug("Cache emptied");
-  } catch (error) {
-    Logger.error(`Failed to empty cache: ${error}`);
   }
 }

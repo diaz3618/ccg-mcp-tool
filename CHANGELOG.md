@@ -2,6 +2,21 @@
 
 ## [Unreleased]
 
+### Multi-Agent Orchestration
+- **Feature**: `deploy-agents` tool — deploy 2-10 AI agents working collaboratively or independently
+  - **parallel**: Multiple agents analyze the same task concurrently, results merged
+  - **sequential**: Agents chain in order, each building on prior agents' outputs
+  - **fan-out**: Each agent works on a separate task from a list (one agent per task)
+- **Feature**: `agent-status` tool — query session history and per-agent results
+- **Feature**: `--agent-mode` server arg (`read-only` | `write`) for strict enforcement
+  - Claude: `--permission-mode plan` (native)
+  - Codex: `--sandbox read-only` (native)
+  - Gemini: `--approval-mode plan` (native)
+- **Feature**: Inter-agent communication via CollaborationSpace message bus
+- **Feature**: Custom concurrency limiter (no external dependency)
+- **Architecture**: New modules: `agentSession.ts`, `agentOrchestrator.ts`, `collaborationSpace.ts`
+- **Scan**: Snyk 0 issues, semgrep 0 findings (384 rules), knip 0 issues, tsc clean
+
 ## [0.3.1] - 2026-03-06
 - **Security**: Upgraded `@modelcontextprotocol/sdk` from 0.5.0 to 1.27.1 (fixes GHSA-8r9q-7v3j-jr4g ReDoS, GHSA-w48q-cv73-mx4w DNS rebinding)
 - **Security**: Added path traversal guard with `path.resolve` validation in chunkCache.ts

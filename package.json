@@ -1,6 +1,6 @@
 {
   "name": "@diazstg/ccg-mcp-tool",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "MCP server for Claude Code, Codex, and Gemini integration",
   "type": "module",
   "main": "dist/index.js",

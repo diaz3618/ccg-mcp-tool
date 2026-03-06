@@ -1,4 +1,4 @@
-import { Tool, Prompt } from "@modelcontextprotocol/sdk/types.js"; // Each tool definition includes its metadata, schema, prompt, and execution logic in one place.
+import { Tool, Prompt } from "@modelcontextprotocol/sdk/types.js";
 
 import { ToolArguments } from "../constants.js";
 import { ZodTypeAny, ZodError } from "zod";
@@ -27,7 +27,6 @@ export function toolExists(toolName: string): boolean {
   return toolRegistry.some((t) => t.name === toolName);
 }
 export function getToolDefinitions(): Tool[] {
-  // get Tool definitions from registry
   return toolRegistry.map((tool) => {
     const raw = zodToJsonSchema(tool.zodSchema, tool.name) as any;
     const def = raw.definitions?.[tool.name] ?? raw;
@@ -60,7 +59,6 @@ function extractPromptArguments(
 }
 
 export function getPromptDefinitions(): Prompt[] {
-  // Helper to get MCP Prompt definitions from registry
   return toolRegistry
     .filter((tool) => tool.prompt)
     .map((tool) => ({

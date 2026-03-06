@@ -62,7 +62,7 @@ async function sendProgressNotification(
   total?: number,
   message?: string,
 ) {
-  if (!progressToken) return; // Only send if client requested progress
+  if (!progressToken) return;
 
   try {
     const params: any = {
@@ -70,7 +70,7 @@ async function sendProgressNotification(
       progress,
     };
 
-    if (total !== undefined) params.total = total; // future cache progress
+    if (total !== undefined) params.total = total;
     if (message) params.message = message;
 
     await server.notification({
@@ -85,7 +85,7 @@ async function sendProgressNotification(
 function startProgressUpdates(operationName: string, progressToken?: string | number) {
   isProcessing = true;
   currentOperationName = operationName;
-  latestOutput = ""; // Reset latest output
+  latestOutput = "";
 
   const providerLabel = ServerConfig.defaultProvider || "AI";
   const progressMessages = [
@@ -99,23 +99,14 @@ function startProgressUpdates(operationName: string, progressToken?: string | nu
   let messageIndex = 0;
   let progress = 0;
 
-  // Send immediate acknowledgment if progress requested
   if (progressToken) {
-    sendProgressNotification(
-      progressToken,
-      0,
-      undefined, // No total - indeterminate progress
-      `🔍 Starting ${operationName}`,
-    );
+    sendProgressNotification(progressToken, 0, undefined, `🔍 Starting ${operationName}`);
   }
 
-  // Keep client alive with periodic updates
   const progressInterval = setInterval(async () => {
     if (isProcessing && progressToken) {
-      // Simply increment progress value
       progress += 1;
 
-      // Include latest output if available
       const baseMessage = progressMessages[messageIndex % progressMessages.length];
       const outputPreview = latestOutput.slice(-150).trim(); // Last 150 chars
       const message = outputPreview
@@ -141,12 +132,11 @@ function stopProgressUpdates(
   progressData: { interval: NodeJS.Timeout; progressToken?: string | number },
   success: boolean = true,
 ) {
-  const operationName = currentOperationName; // Store before clearing
+  const operationName = currentOperationName;
   isProcessing = false;
   currentOperationName = "";
   clearInterval(progressData.interval);
 
-  // Send final progress notification if client requested progress
   if (progressData.progressToken) {
     sendProgressNotification(
       progressData.progressToken,
@@ -157,7 +147,6 @@ function stopProgressUpdates(
   }
 }
 
-// tools/list
 server.setRequestHandler(
   ListToolsRequestSchema,
   async (_request: ListToolsRequest): Promise<{ tools: Tool[] }> => {
@@ -165,31 +154,25 @@ server.setRequestHandler(
   },
 );
 
-// tools/get
 server.setRequestHandler(
   CallToolRequestSchema,
   async (request: CallToolRequest): Promise<CallToolResult> => {
     const toolName: string = request.params.name;
 
     if (toolExists(toolName)) {
-      // Check if client requested progress updates
       const progressToken = (request.params as any)._meta?.progressToken;
 
-      // Start progress updates if client requested them
       const progressData = startProgressUpdates(toolName, progressToken);
 
       try {
-        // Get prompt and other parameters from arguments with proper typing
         const args: ToolArguments = (request.params.arguments as ToolArguments) || {};
 
         Logger.toolInvocation(toolName, request.params.arguments);
 
-        // Execute the tool using the unified registry with progress callback
         const result = await executeTool(toolName, args, (newOutput) => {
           latestOutput = newOutput;
         });
 
-        // Stop progress updates
         stopProgressUpdates(progressData, true);
 
         return {
@@ -202,7 +185,6 @@ server.setRequestHandler(
           isError: false,
         };
       } catch (error) {
-        // Stop progress updates on error
         stopProgressUpdates(progressData, false);
 
         Logger.error(`Error in tool '${toolName}':`, error);
@@ -225,7 +207,6 @@ server.setRequestHandler(
   },
 );
 
-// prompts/list
 server.setRequestHandler(
   ListPromptsRequestSchema,
   async (_request: ListPromptsRequest): Promise<{ prompts: Prompt[] }> => {
@@ -233,7 +214,6 @@ server.setRequestHandler(
   },
 );
 
-// prompts/get
 server.setRequestHandler(
   GetPromptRequestSchema,
   async (request: GetPromptRequest): Promise<GetPromptResult> => {
@@ -260,7 +240,6 @@ server.setRequestHandler(
   },
 );
 
-// Start the server
 async function main() {
   Logger.debug("init ccg-mcp-tool");
   const transport = new StdioServerTransport();

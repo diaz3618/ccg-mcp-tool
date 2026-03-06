@@ -345,10 +345,6 @@ const ROUTING: Record<string, string[]> = {
   ],
 };
 
-// ---------------------------------------------------------------------------
-// Tool 1: mitigate-mistakes
-// Single targeted research-grounded skill gate.
-// ---------------------------------------------------------------------------
 const analyzerArgsSchema = z.object({
   prompt: z
     .string()
@@ -391,7 +387,6 @@ export const analyzerTool: UnifiedTool = {
       provider: string;
       model?: string;
     };
-    // Only use default model when provider matches default (avoid passing codex model to claude, etc.)
     const model =
       (args as any).model ||
       (provider === ServerConfig.defaultProvider ? ServerConfig.defaultModel : undefined);

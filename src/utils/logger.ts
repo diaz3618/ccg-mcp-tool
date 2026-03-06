@@ -1,4 +1,3 @@
-// WIP
 import { LOG_PREFIX } from "../constants.js";
 
 export class Logger {
@@ -19,7 +18,7 @@ export class Logger {
   }
 
   static debug(message: string, ...args: any[]): void {
-    console.warn(this.formatMessage(message), ...args);
+    console.warn(this.formatMessage(`[DEBUG] ${message}`), ...args);
   }
 
   static toolInvocation(toolName: string, args: any): void {
@@ -38,11 +37,9 @@ export class Logger {
   static commandExecution(command: string, args: string[], startTime: number): void {
     this.warn(`[${startTime}] Starting: ${command} ${args.map((arg) => `"${arg}"`).join(" ")}`);
 
-    // Store command execution start for timing analysis
     this._commandStartTimes.set(startTime, { command, args, startTime });
   }
 
-  // Track command start times for duration calculation
   private static _commandStartTimes = new Map<
     number,
     { command: string; args: string[]; startTime: number }
@@ -55,7 +52,6 @@ export class Logger {
       this.warn(`Response: ${outputLength} chars`);
     }
 
-    // Clean up command tracking
     this._commandStartTimes.delete(startTime);
   }
 }
