@@ -53,6 +53,10 @@ export const PROTOCOL = {
   KEEPALIVE_INTERVAL: 25000, // 25 seconds
 } as const;
 
+export const AGENT_TEAMS = {
+  ENV_VAR: "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS",
+} as const;
+
 export const CLI = {
   COMMANDS: {
     GEMINI: "gemini",
@@ -99,6 +103,7 @@ export interface ToolArguments {
   strategy?: string;
   maxConcurrency?: number;
   context?: string;
+  useAgentTeams?: boolean;
   sessionId?: string;
   task_type?: string;
 

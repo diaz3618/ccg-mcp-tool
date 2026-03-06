@@ -7,7 +7,7 @@
 
 import { executeCommand } from "./commandExecutor.js";
 import { Logger } from "./logger.js";
-import { CLI, PROVIDERS } from "../constants.js";
+import { CLI, PROVIDERS, AGENT_TEAMS } from "../constants.js";
 import { ServerConfig, type AgentMode } from "../config.js";
 
 /** Possible states of an agent session. */
@@ -41,10 +41,12 @@ function buildAgentArgs(
   provider: string,
   model: string | undefined,
   agentMode: AgentMode,
-): { command: string; args: string[] } {
+  useAgentTeams: boolean = false,
+): { command: string; args: string[]; extraEnv?: Record<string, string> } {
   const args: string[] = [];
   let command: string;
   const finalPrompt = prompt;
+  let extraEnv: Record<string, string> | undefined;
 
   if (provider === PROVIDERS.CODEX) {
     command = CLI.COMMANDS.CODEX;
@@ -65,6 +67,9 @@ function buildAgentArgs(
     if (model) {
       args.push("--model", model);
     }
+    if (useAgentTeams) {
+      extraEnv = { [AGENT_TEAMS.ENV_VAR]: "1" };
+    }
     args.push(finalPrompt);
   } else {
     // Default: Gemini
@@ -78,19 +83,20 @@ function buildAgentArgs(
     args.push(CLI.FLAGS.PROMPT, finalPrompt);
   }
 
-  return { command, args };
+  return { command, args, extraEnv };
 }
 
 /**
  * Execute a single agent session and return the result.
  *
- * @param agentId    Unique identifier for this agent within the session.
- * @param role       Human-readable role label (e.g., "agent-1", "reviewer").
- * @param prompt     The prompt to send to the CLI.
- * @param provider   CLI provider ("claude", "codex", "gemini").
- * @param model      Optional model override.
- * @param agentMode  "read-only" or "write" — determines safety flags.
- * @param onProgress Optional callback for streaming progress.
+ * @param agentId         Unique identifier for this agent within the session.
+ * @param role            Human-readable role label (e.g., "agent-1", "reviewer").
+ * @param prompt          The prompt to send to the CLI.
+ * @param provider        CLI provider ("claude", "codex", "gemini").
+ * @param model           Optional model override.
+ * @param agentMode       "read-only" or "write" — determines safety flags.
+ * @param onProgress      Optional callback for streaming progress.
+ * @param useAgentTeams   Enable Claude Code Agent Teams (Claude only).
  */
 export async function executeAgentSession(
   agentId: string,
@@ -100,15 +106,24 @@ export async function executeAgentSession(
   model?: string,
   agentMode: AgentMode = ServerConfig.agentMode,
   onProgress?: (output: string) => void,
+  useAgentTeams: boolean = false,
 ): Promise<AgentResult> {
   const startTime = Date.now();
 
-  Logger.debug(`[Agent:${agentId}] Starting (provider=${provider}, mode=${agentMode})`);
+  Logger.debug(
+    `[Agent:${agentId}] Starting (provider=${provider}, mode=${agentMode}${useAgentTeams ? ", agentTeams=true" : ""})`,
+  );
 
-  const { command, args } = buildAgentArgs(prompt, provider, model, agentMode);
+  const { command, args, extraEnv } = buildAgentArgs(
+    prompt,
+    provider,
+    model,
+    agentMode,
+    useAgentTeams,
+  );
 
   try {
-    const output = await executeCommand(command, args, onProgress);
+    const output = await executeCommand(command, args, onProgress, extraEnv);
     const durationMs = Date.now() - startTime;
 
     Logger.debug(`[Agent:${agentId}] Completed in ${durationMs}ms`);

@@ -119,6 +119,7 @@ Deploy multiple AI agents to work on tasks collaboratively or independently. Age
 | `model` | No | Provider default | Model override |
 | `maxConcurrency` | No | `3` | Max parallel processes (1–10) |
 | `context` | No | — | Shared context injected into every agent prompt |
+| `useAgentTeams` | No | `false` | Enable Claude Code Agent Teams (Claude only). Requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` enabled in Claude Code. See [Anthropic docs](https://code.claude.com/docs/en/agent-teams) |
 
 **Strategies:**
 

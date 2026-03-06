@@ -5,6 +5,7 @@ export async function executeCommand(
   command: string,
   args: string[],
   onProgress?: (newOutput: string) => void,
+  extraEnv?: Record<string, string>,
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     const startTime = Date.now();
@@ -12,7 +13,7 @@ export async function executeCommand(
 
     // nosemgrep: detect-child-process -- command is from PROVIDERS constants, not user input; shell:false prevents injection
     const childProcess = spawn(command, args, {
-      env: process.env,
+      env: extraEnv ? { ...process.env, ...extraEnv } : process.env,
       shell: false,
       stdio: ["ignore", "pipe", "pipe"],
     });

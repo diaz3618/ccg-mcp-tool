@@ -67,6 +67,16 @@ const deployAgentsSchema = z.object({
       "Shared context injected into every agent's prompt. " +
         "Use for project background, constraints, or coordination instructions.",
     ),
+  useAgentTeams: z
+    .boolean()
+    .optional()
+    .default(false)
+    .describe(
+      "Enable Claude Code Agent Teams (Claude provider only). " +
+        "Delegates team coordination to Claude Code's native Agent Teams feature. " +
+        "Requires CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS enabled in Claude Code settings. " +
+        "See: https://code.claude.com/docs/en/agent-teams",
+    ),
 });
 
 export const deployAgentsTool: UnifiedTool = {
@@ -84,7 +94,7 @@ export const deployAgentsTool: UnifiedTool = {
   },
   category: "utility",
   execute: async (args) => {
-    const { tasks, strategy, provider, maxConcurrency, context } = args;
+    const { tasks, strategy, provider, maxConcurrency, context, useAgentTeams } = args;
 
     const agentCount = args.agentCount as number;
     const model =
@@ -107,6 +117,15 @@ export const deployAgentsTool: UnifiedTool = {
       );
     }
 
+    // Validate useAgentTeams — only works with Claude
+    if (useAgentTeams && (provider as string) !== "claude") {
+      return (
+        `Error: 'useAgentTeams' is only supported with the 'claude' provider. ` +
+        `Current provider: '${provider as string}'. ` +
+        `Either set provider to 'claude' or disable useAgentTeams.`
+      );
+    }
+
     const effectiveAgentCount =
       strategy === "fan-out" ? (tasks as string[]).length : (agentCount as number);
 
@@ -118,6 +137,7 @@ export const deployAgentsTool: UnifiedTool = {
       model: model as string | undefined,
       maxConcurrency: maxConcurrency as number,
       context: context as string | undefined,
+      useAgentTeams: (useAgentTeams as boolean) || false,
     });
 
     // Format output

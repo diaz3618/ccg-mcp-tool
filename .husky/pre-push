@@ -17,7 +17,7 @@ echo ""
 
 # ── 2. Prettier format check ──────────────────────────────────────────────────
 echo "▶ Prettier: checking formatting..."
-npx prettier --check "src/**/*.ts" "*.json"
+npx prettier --check "src/**/*.ts" "*.json" "!.mcp.json"
 echo "  ✅ Prettier OK"
 echo ""
 

@@ -19,6 +19,7 @@ import { executeAgentSession, type AgentResult } from "./agentSession.js";
 import { CollaborationSpace } from "./collaborationSpace.js";
 import { Logger } from "./logger.js";
 import { ServerConfig } from "../config.js";
+import { PROVIDERS } from "../constants.js";
 
 export type ExecutionStrategy = "parallel" | "sequential" | "fan-out";
 
@@ -31,6 +32,7 @@ export interface OrchestrationConfig {
   model?: string;
   maxConcurrency: number;
   context?: string;
+  useAgentTeams?: boolean;
 }
 
 /** Full result of an orchestration session. */
@@ -199,18 +201,24 @@ export async function orchestrate(config: OrchestrationConfig): Promise<Orchestr
 
   let agents: AgentResult[];
 
-  switch (config.strategy) {
-    case "parallel":
-      agents = await executeParallel(config, space);
-      break;
-    case "sequential":
-      agents = await executeSequential(config, space);
-      break;
-    case "fan-out":
-      agents = await executeFanOut(config, space);
-      break;
-    default:
-      throw new Error(`Unknown strategy: ${config.strategy}`);
+  // When Agent Teams is enabled with Claude, delegate to a single Claude Code session
+  // that manages the team internally using Claude Code's native Agent Teams feature.
+  if (config.useAgentTeams && config.provider === PROVIDERS.CLAUDE) {
+    agents = await executeAgentTeamsSession(config, space);
+  } else {
+    switch (config.strategy) {
+      case "parallel":
+        agents = await executeParallel(config, space);
+        break;
+      case "sequential":
+        agents = await executeSequential(config, space);
+        break;
+      case "fan-out":
+        agents = await executeFanOut(config, space);
+        break;
+      default:
+        throw new Error(`Unknown strategy: ${config.strategy}`);
+    }
   }
 
   const totalDurationMs = Date.now() - startTime;
@@ -238,6 +246,84 @@ export async function orchestrate(config: OrchestrationConfig): Promise<Orchestr
   Logger.debug(`[Orchestrator:${sessionId}] Completed in ${totalDurationMs}ms`);
 
   return result;
+}
+
+/**
+ * Claude Code Agent Teams strategy: Delegates to a single Claude Code session
+ * with CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 enabled. Claude Code manages
+ * the team internally — spawning teammates, assigning tasks, and coordinating.
+ *
+ * @see https://code.claude.com/docs/en/agent-teams
+ */
+async function executeAgentTeamsSession(
+  config: OrchestrationConfig,
+  space: CollaborationSpace,
+): Promise<AgentResult[]> {
+  const prompt = buildAgentTeamsPrompt(config);
+
+  space.publish(
+    "orchestrator",
+    `Delegating to Claude Code Agent Teams (${config.agentCount} teammates)`,
+    "status",
+  );
+
+  const result = await executeAgentSession(
+    "agent-teams-lead",
+    "Agent Teams Lead",
+    prompt,
+    PROVIDERS.CLAUDE,
+    config.model,
+    ServerConfig.agentMode,
+    undefined,
+    true, // useAgentTeams
+  );
+
+  space.publish(
+    "agent-teams-lead",
+    result.output || result.error || "No output",
+    result.status === "completed" ? "output" : "error",
+  );
+
+  return [result];
+}
+
+/**
+ * Build a prompt that instructs Claude Code to create and manage an agent team.
+ */
+function buildAgentTeamsPrompt(config: OrchestrationConfig): string {
+  const parts: string[] = [];
+
+  if (config.strategy === "fan-out") {
+    const taskList = config.tasks.map((t, i) => `${i + 1}. ${t}`).join("\n");
+    parts.push(
+      `Create an agent team with ${config.tasks.length} teammates. ` +
+        `Assign each teammate one of these tasks:\n${taskList}`,
+    );
+    parts.push(
+      `Each teammate should work independently on their assigned task. ` +
+        `Synthesize all results when every teammate is done.`,
+    );
+  } else if (config.strategy === "sequential") {
+    parts.push(
+      `Create an agent team with ${config.agentCount} teammates to work on the following task sequentially. ` +
+        `Each teammate should build on the prior teammate's output, adding new insights or corrections.`,
+    );
+    parts.push(`Task: ${config.tasks[0]}`);
+  } else {
+    // parallel
+    parts.push(
+      `Create an agent team with ${config.agentCount} teammates to work on the following task in parallel. ` +
+        `Each teammate should provide independent analysis from a different angle. ` +
+        `Synthesize all findings when done.`,
+    );
+    parts.push(`Task: ${config.tasks[0]}`);
+  }
+
+  if (config.context?.trim()) {
+    parts.push(`\nAdditional context:\n${config.context}`);
+  }
+
+  return parts.join("\n\n");
 }
 
 /**
