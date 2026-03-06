@@ -143,7 +143,7 @@ Enable debug logging to see what's happening under the hood:
 |--------------|----------------------|------------|
 | Gemini | `gemini-2.5-flash` | Fast file analysis |
 | Codex | `gpt-5.3-codex` | Precision refactoring |
-| Claude | `claude-3-5-sonnet` | Complex logic / RCA |
+| Claude | `sonnet` | Complex logic / RCA |
 
 ## Reset Everything
 

@@ -52,9 +52,9 @@ Add this configuration to your Claude Desktop config file:
         "-y", 
         "ccg-mcp-tool",
         "--provider",
-        "codex",
+        "claude",
         "--model",
-        "gpt-5.3-codex"
+        "sonnet"
       ]
     }
   }
@@ -65,7 +65,7 @@ Add this configuration to your Claude Desktop config file:
 
 ## Example Workflow
 
-- **Multi-Provider**: `ask ai --provider codex --model gpt-5.3-codex to refactor @src/auth.ts`
+- **Multi-Provider**: `ask ai --provider codex to refactor @src/auth.ts`
 - **Mistake Mitigation**: `mitigate mistakes --skill requirements-grounding for @new-feature.md`
 - **Gemini Specific**: `ask ai --provider gemini to analyze @. and explain the architecture`
 
@@ -77,7 +77,7 @@ Universal tool for AI analysis across providers.
 
 - **`prompt`** (required): Your request. Use `@` for files.
 - **`provider`** (optional): `gemini`, `codex`, or `claude`. Defaults to server config.
-- **`model`** (optional): Specific model for the provider (e.g., `gemini-2.5-flash`, `gpt-5.3-codex`).
+- **`model`** (optional): Specific model for the provider (e.g., `gemini-2.5-flash`, `sonnet`, `opus`). Claude uses aliases (`sonnet`, `opus`, `haiku`) or full names.
 - **`sandbox`** (optional): Gemini-only. Run in an isolated environment.
 - **`changeMode`** (optional): Gemini-only. Returns structured edits.
 

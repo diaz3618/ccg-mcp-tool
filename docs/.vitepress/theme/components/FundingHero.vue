@@ -14,7 +14,7 @@
     <div class="hero-content">
       <h1 class="hero-title">
         <span class="title-main">Support Development</span>
-        <span class="title-sub">of Gemini MCP Tool</span>
+        <span class="title-sub">of CCG MCP Tool</span>
       </h1>
 
       <p class="hero-description">

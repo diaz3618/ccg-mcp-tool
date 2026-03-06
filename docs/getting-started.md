@@ -200,7 +200,7 @@ npm install -g @anthropics/claude-code
 1. Check your configuration file path
 2. Ensure JSON syntax is correct
 3. Restart your MCP client completely
-4. Verify your AI CLI works (e.g. `gemini -help`)
+4. Verify your AI CLI works (e.g. `gemini --help`)
 
 
 ### Client-Specific Issues

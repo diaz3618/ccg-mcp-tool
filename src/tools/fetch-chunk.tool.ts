@@ -8,7 +8,10 @@ import {
 import { Logger } from "../utils/logger.js";
 
 const inputSchema = z.object({
-  cacheKey: z.string().describe("The cache key provided in the initial changeMode response"),
+  cacheKey: z
+    .string()
+    .regex(/^[a-f0-9]+$/, "Cache key must be a hex string")
+    .describe("The cache key provided in the initial changeMode response"),
   chunkIndex: z.number().min(1).describe("Which chunk to retrieve (1-based index)"),
 });
 
@@ -45,7 +48,7 @@ export const fetchChunkTool: UnifiedTool = {
       return `❌ Cache miss: No chunks found for cache key "${cacheKey}". 
 
   Possible reasons:
-  1. The cache key is incorrect, Have you ran ask-ai (or ask-gemini) with changeMode enabled?
+  1. The cache key is incorrect, Have you ran ask-ai with changeMode enabled?
   2. The cache has expired (10 minute TTL)
   3. The MCP server was restarted and the file-based cache was cleared
 

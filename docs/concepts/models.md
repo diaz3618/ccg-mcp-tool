@@ -63,6 +63,10 @@ Accessed via the [Gemini CLI](https://github.com/google-gemini/gemini-cli). Best
 
 Accessed via the [Claude Code CLI](https://claude.com/product/claude-code). Best for advanced reasoning, nuanced code review, and agentic multi-step workflows. Supports `changeMode` for structured edit output.
 
+::: tip Claude CLI Model Aliases
+The Claude CLI accepts short aliases: `sonnet`, `opus`, `haiku` (resolves to the latest model in each family), or full model names like `claude-sonnet-4-5-20250929`. Use aliases for convenience.
+:::
+
 #### `claude-opus-4-5` *(most capable)*
 | Property | Value |
 |---|---|
@@ -185,9 +189,9 @@ Set your preferred provider and model in your MCP configuration file:
 Override the defaults at any time:
 
 ```
-/ccg-tool:ask-ai prompt:@src/auth.ts refactor this provider:claude model:claude-sonnet-4-5
+/ccg-tool:ask-ai prompt:@src/auth.ts refactor this provider:claude model:sonnet
 /ccg-tool:ask-ai prompt:@. analyze architecture provider:gemini model:gemini-2.5-pro
-/ccg-tool:ask-ai prompt:add unit tests to @api.ts provider:codex model:gpt-5.3-codex
+/ccg-tool:ask-ai prompt:add unit tests to @api.ts provider:codex
 ```
 
 ---

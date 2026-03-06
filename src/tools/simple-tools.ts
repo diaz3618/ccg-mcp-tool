@@ -35,7 +35,6 @@ export const helpTool: UnifiedTool = {
   execute: async (_args, onProgress) => {
     const provider = ServerConfig.defaultProvider;
     const command = (CLI.COMMANDS as Record<string, string>)[provider.toUpperCase()] || provider;
-    const helpFlag = provider === "codex" ? "--help" : "-help";
-    return executeCommand(command, [helpFlag], onProgress);
+    return executeCommand(command, [CLI.FLAGS.HELP], onProgress);
   },
 };

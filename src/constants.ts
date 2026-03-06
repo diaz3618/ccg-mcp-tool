@@ -29,7 +29,7 @@ export const MODELS = {
   PRO: "gemini-2.5-pro",
   FLASH: "gemini-2.5-flash",
   CODEX: "gpt-5.3-codex",
-  CLAUDE: "claude-3-5-sonnet",
+  CLAUDE: "sonnet",
 } as const;
 
 // Providers
@@ -79,7 +79,7 @@ export const CLI = {
     MODEL: "-m",
     SANDBOX: "-s",
     PROMPT: "-p",
-    HELP: "-help",
+    HELP: "--help",
     PROVIDER: "--provider",
   },
   // Default values

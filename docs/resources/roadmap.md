@@ -65,5 +65,9 @@ timeline
                        : Multi-Provider Support
                        : Startup Configuration (args)
                        : Research-Grounded Mitigation Gates
+
+        v0.3.0 Release : CLI model name fixes
+                       : Claude alias support (sonnet/opus/haiku)
+                       : Documentation updates
 ```
 </DiagramModal>

@@ -39,7 +39,7 @@ Use the `provider` argument in your tool calls (e.g. `provider:codex`) or set a 
 ### Which model should I use?
 - **Large Codebase Analysis**: Gemini Pro
 - **Precise Refactoring**: OpenAI Codex
-- **Complex Reasoning & Bugs**: Claude 3.5 Sonnet
+- **Complex Reasoning & Bugs**: Claude Sonnet or Opus
 
 ## Features
 

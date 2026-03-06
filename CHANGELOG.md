@@ -2,6 +2,17 @@
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-03-05
+- **Fix**: Claude CLI model name changed from invalid `claude-3-5-sonnet` to alias `sonnet` (Claude CLI accepts aliases: `sonnet`, `opus`, `haiku`)
+- **Fix**: Help tool now uses `--help` for all providers (was incorrectly using `-help` for Gemini)
+- **Fix**: `CLI.FLAGS.HELP` constant corrected from `-help` to `--help`
+- **Docs**: Updated README config example to use `--provider claude --model sonnet`
+- **Docs**: Added Claude CLI alias guidance to models.md
+- **Docs**: Fixed `gemini -help` → `gemini --help` in getting-started.md
+- **Docs**: Fixed FundingHero component name from "Gemini MCP Tool" to "CCG MCP Tool"
+- **Docs**: Updated troubleshooting model recommendations to use CLI-valid names
+- **Docs**: Removed legacy `ask-gemini` alias reference from fetch-chunk error message
+
 ## [0.2.0] - 2026-07-01
 - **Security**: Fixed shell injection in GitHub Actions workflows (moved `github.event.inputs.tag` to `env:` block in docker-publish.yml and npm-publish.yml)
 - **Security**: Added `cacheKey` hex validation in `chunkCache.ts` to prevent path traversal
