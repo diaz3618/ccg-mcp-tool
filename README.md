@@ -10,10 +10,10 @@
 [![npm downloads](https://img.shields.io/npm/dt/%40diazstg%2Fccg-mcp-tool)](https://www.npmjs.com/package/@diazstg/ccg-mcp-tool)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-</div>
 <a href="https://glama.ai/mcp/servers/@diaz3618/ccg-mcp-tool">
   <img width="380" height="200" src="https://glama.ai/mcp/servers/@diaz3618/ccg-mcp-tool/badge" />
 </a>
+</div>
 
 MCP server that integrates **Claude Code**, **OpenAI Codex**, and **Google Gemini** into a single workflow. Analyze codebases with Gemini's massive context window, get precision edits with Codex, or use Claude's reasoning — all from one MCP interface.
 
